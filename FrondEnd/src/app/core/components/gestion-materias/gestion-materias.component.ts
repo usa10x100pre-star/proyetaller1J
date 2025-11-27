@@ -156,6 +156,14 @@ export class GestionMateriasComponent implements OnInit {
   }
 
   guardarMateria(materia: Materia): void {
+    const codmat = materia.codmat?.trim();
+    const nombre = materia.nombre?.trim();
+
+    if (!codmat || !nombre) {
+      this.notificationService.showError('La sigla y el nombre son obligatorios.');
+      return;
+    }
+
     if (materia.nivel.codn === 0) {
       alert('Por favor, seleccione un nivel.');
       return;
@@ -181,6 +189,12 @@ export class GestionMateriasComponent implements OnInit {
   }
 
   modificarMateria(materia: Materia): void {
+    const nombre = materia.nombre?.trim();
+
+    if (!nombre) {
+      this.notificationService.showError('El nombre de la materia es obligatorio.');
+      return;
+    }
     if (materia.nivel.codn === 0) {
       alert('Por favor, seleccione un nivel.');
       return;

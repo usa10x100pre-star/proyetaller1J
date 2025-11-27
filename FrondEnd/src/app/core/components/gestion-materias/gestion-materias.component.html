@@ -138,16 +138,16 @@
 
             <!-- Botón Paralelo (B-12.1) -->
             <td class="px-6 py-3 text-center">
-              <button
-                title="Gestionar Paralelos (B-12.1)"
-                (click)="abrirPanelParalelos(m)"
-                [class.bg-indigo-200]="materiaSeleccionadaParaParalelos?.codmat === m.codmat"
-                [class.text-indigo-950]="materiaSeleccionadaParaParalelos?.codmat === m.codmat"
-                [class.animate-pulse]="materiaSeleccionadaParaParalelos?.codmat === m.codmat"
-                class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-indigo-900 shadow-sm transition"
-              >
-                <i class="fa-solid fa-people-group"></i>
-              </button>
+              <label class="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="materiaParalelo"
+                  [checked]="materiaSeleccionadaParaParalelos?.codmat === m.codmat"
+                  (change)="abrirPanelParalelos(m)"
+                  class="accent-indigo-900 w-4 h-4"
+                />
+                <span class="text-sm font-semibold text-indigo-900">Paralelos</span>
+              </label>
             </td>
 
             <!-- Botón Items (B-12.2) -->

@@ -1,6 +1,7 @@
 package com.Proyecto.backEnd.service;
 
 import com.Proyecto.backEnd.model.PersonalModel;
+import com.Proyecto.backEnd.repository.DatosRepo;
 import com.Proyecto.backEnd.repository.PersonalRepo;
 import com.Proyecto.backEnd.repository.UsuariosRepo;
 import jakarta.persistence.criteria.Predicate;
@@ -22,7 +23,8 @@ public class PersonalService {
     private PersonalRepo personalRepo;
     @Autowired
     private UsuariosRepo usuariosRepo;
-
+    @Autowired
+    private DatosRepo datosRepo;
     @Value("${upload.dir}")
     private String uploadDir;
 
@@ -32,8 +34,12 @@ public class PersonalService {
 
     // Listar
     public List<PersonalModel> listarTodo() {
-    	List<PersonalModel> lista = personalRepo.findAll();
-        lista.forEach(p -> p.setFoto(normalizarFoto(p.getFoto())));
+    	 List<PersonalModel> lista = personalRepo.findAll();
+         lista.forEach(p -> {
+             p.setFoto(normalizarFoto(p.getFoto()));
+             datosRepo.findById(p.getCodp())
+                     .ifPresent(datos -> p.setCedula(datos.getCedula()));
+         });
         return lista;
     }
 

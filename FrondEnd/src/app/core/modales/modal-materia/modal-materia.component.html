@@ -17,11 +17,18 @@
           type="text"
           [(ngModel)]="materia.codmat"
           [disabled]="modoEdicion"
-          placeholder="Ej: SIS-101"
+          placeholder="Ej: FIS-103"
+          required
           class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm bg-white/90
                  focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none placeholder-indigo-900/60
                  disabled:bg-gray-200 disabled:text-gray-500"
         />
+         <p
+          *ngIf="!materia.codmat?.trim()"
+          class="mt-1 text-xs text-red-600"
+        >
+          La sigla es obligatoria.
+        </p>
       </div>
 
       <!-- NOMBRE -->
@@ -32,9 +39,16 @@
         <input
           type="text"
           [(ngModel)]="materia.nombre"
+          required
           class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm bg-white/90
                  focus:ring-2 focus:ring-amber-400 focus:outline-none"
         />
+        <p
+          *ngIf="!materia.nombre?.trim()"
+          class="mt-1 text-xs text-red-600"
+        >
+          El nombre es obligatorio.
+        </p>
       </div>
 
       <!-- NIVEL -->
@@ -60,7 +74,7 @@
     <div class="flex justify-center gap-6 mt-8">
       <button
         (click)="guardar.emit(materia)"
-        [disabled]="materia.nivel.codn === 0"
+        [disabled]="materia.nivel.codn === 0 || !materia.codmat?.trim() || !materia.nombre?.trim()"
         class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300
                text-white px-6 py-2.5 rounded-full font-semibold tracking-wide shadow-md hover:shadow-lg
                transition-transform duration-200 hover:-translate-y-[1px] disabled:bg-gray-400"

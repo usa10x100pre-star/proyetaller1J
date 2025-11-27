@@ -37,6 +37,9 @@ export class GestionUsuariosComponent implements OnInit {
   get totalPaginas(): number {
     return Math.ceil(this.filtrar().length / this.itemsPorPagina);
   }
+  get usuariosFiltrados(): Personal[] {
+    return this.filtrar();
+  }
 
   cambiarPagina(nuevaPagina: number): void {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
@@ -214,7 +217,52 @@ export class GestionUsuariosComponent implements OnInit {
 
 
   imprimirUsuarios(): void {
-    window.print();
+    const usuarios = this.filtrar();
+
+    const printWindow = window.open('', '_blank', 'width=900,height=650');
+    if (!printWindow) {
+      this.notificationService.showError('No se pudo abrir la vista de impresión.');
+      return;
+    }
+
+    const filas = usuarios.map((u) => `
+      <tr>
+        <td style="padding:12px; vertical-align:top;">
+          <img src="${this.getFotoUrl(u.foto)}" alt="Foto de ${u.nombre}" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #cbd5e1;" />
+        </td>
+        <td style="padding:12px;">
+          <div style="font-weight:700;color:#0f172a;font-size:16px;">${u.ap} ${u.am ?? ''} ${u.nombre}</div>
+          <div style="margin-top:4px;color:#1e293b;font-size:14px;">Cédula: <strong>${u.cedula ?? '—'}</strong></div>
+          <div style="color:#334155;font-size:14px;">Tipo: ${u.tipo === 'P' ? 'Profesor' : u.tipo === 'E' ? 'Estudiante' : 'Administrativo'}</div>
+          <div style="color:#334155;font-size:14px;">Estado: ${u.estado === 1 ? 'Activo' : 'Inactivo'}</div>
+        </td>
+      </tr>
+    `).join('');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Listado de Personal</title>
+          <style>
+            body { font-family: 'Times New Roman', serif; margin: 24px; color: #0f172a; }
+            h1 { text-align: center; color: #1e3a8a; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            tr { border-bottom: 1px solid #e2e8f0; }
+          </style>
+        </head>
+        <body>
+          <h1>Listado de Personal</h1>
+          <table>
+            ${filas}
+          </table>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
   }
 
   cerrarModalPersona(): void {

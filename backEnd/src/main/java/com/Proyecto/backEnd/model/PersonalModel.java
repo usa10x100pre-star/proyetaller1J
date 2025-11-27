@@ -1,7 +1,8 @@
 package com.Proyecto.backEnd.model;
 
 import java.time.LocalDate;
-
+import com.Proyecto.backEnd.model.DatosModel;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -30,15 +31,21 @@ public class PersonalModel {
 	String ecivil;
 	String genero;
 	String direc;
-	String telf; 
-	String tipo;
-	String foto;
-	
-	 @Transient
-    private Integer tieneClave;
+	String telf;
+    String tipo;
+    String foto;
 
-	@OneToOne(mappedBy="personal")
-	@JsonBackReference
-	private UsuariosModel usuarios;
+    @Transient
+    private Integer tieneClave;
+    @Transient
+    private String cedula;
+
+    @OneToOne(mappedBy="personal")
+    @JsonBackReference
+    private UsuariosModel usuarios;
+
+    @OneToOne(mappedBy = "personal")
+    @JsonManagedReference
+    private DatosModel datos;
 
 }

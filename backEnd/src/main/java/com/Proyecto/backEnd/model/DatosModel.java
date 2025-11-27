@@ -1,6 +1,7 @@
 package com.Proyecto.backEnd.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "datos")
@@ -16,6 +17,7 @@ public class DatosModel {
     @OneToOne
     @MapsId  // usa el mismo codp como ID
     @JoinColumn(name = "codp")
+    @JsonBackReference
     private PersonalModel personal;
 
     // Getters y setters
