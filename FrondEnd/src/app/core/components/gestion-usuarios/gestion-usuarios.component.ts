@@ -55,9 +55,11 @@ export class GestionUsuariosComponent implements OnInit {
   ) { }
  getFotoUrl(foto?: string | null): string {
     const fallback = 'default-user.png';
-    const nombreFoto = (!foto || foto.trim() === '' || foto === 'null' || foto === 'undefined')
+      const normalizada = (foto || '').trim().toLowerCase();
+    const nombreFoto = (!normalizada || normalizada === 'null' || normalizada === 'undefined'
+      || normalizada === 'default' || normalizada === 'default-user')
       ? fallback
-      : foto;
+      : foto!;
 
     return `${this.apiURL}/uploads/fotos/${nombreFoto}`;
   }

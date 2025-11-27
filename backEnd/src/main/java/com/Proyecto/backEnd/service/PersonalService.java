@@ -99,7 +99,9 @@ public class PersonalService {
             Predicate p2 = cb.equal(root.get("tipo"), "P"); // Tipo 'P' (Profesor)
             return cb.and(p1, p2);
         };
-        return personalRepo.findAll(spec, Sort.by(Sort.Direction.ASC, "ap"));
+        List<PersonalModel> profesores = personalRepo.findAll(spec, Sort.by(Sort.Direction.ASC, "ap"));
+        profesores.forEach(p -> p.setFoto(normalizarFoto(p.getFoto())));
+        return profesores;
     }
 
     // Habilitar
@@ -149,7 +151,9 @@ public class PersonalService {
     private String normalizarFoto(String foto) {
         if (foto == null || foto.trim().isEmpty() ||
                 "null".equalsIgnoreCase(foto) ||
-                "undefined".equalsIgnoreCase(foto)) {
+                "undefined".equalsIgnoreCase(foto) ||
+                "default".equalsIgnoreCase(foto) ||
+                "default-user".equalsIgnoreCase(foto)) {
             return "default-user.png";
         }
         return foto;
@@ -161,6 +165,8 @@ public class PersonalService {
             Predicate p2 = cb.equal(root.get("tipo"), "E"); // Tipo 'E' (Estudiante)
             return cb.and(p1, p2);
         };
-        return personalRepo.findAll(spec, Sort.by(Sort.Direction.ASC, "ap"));
+        List<PersonalModel> estudiantes = personalRepo.findAll(spec, Sort.by(Sort.Direction.ASC, "ap"));
+        estudiantes.forEach(p -> p.setFoto(normalizarFoto(p.getFoto())));
+        return estudiantes;
     }
 }
