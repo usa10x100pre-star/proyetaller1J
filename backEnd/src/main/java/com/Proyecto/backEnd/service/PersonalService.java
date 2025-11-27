@@ -32,7 +32,9 @@ public class PersonalService {
 
     // Listar
     public List<PersonalModel> listarTodo() {
-        return personalRepo.findAll();
+    	List<PersonalModel> lista = personalRepo.findAll();
+        lista.forEach(p -> p.setFoto(normalizarFoto(p.getFoto())));
+        return lista;
     }
 
     public PersonalModel crear(PersonalModel personal, MultipartFile foto) throws IOException {
@@ -77,6 +79,8 @@ public class PersonalService {
             String nombreArchivo = guardarFoto(nuevaFoto);
             p.setFoto(nombreArchivo);
         }
+
+        p.setFoto(normalizarFoto(p.getFoto()));
 
         return personalRepo.save(p);
     }
@@ -142,6 +146,14 @@ public class PersonalService {
         return nombreArchivo;
     }
 
+    private String normalizarFoto(String foto) {
+        if (foto == null || foto.trim().isEmpty() ||
+                "null".equalsIgnoreCase(foto) ||
+                "undefined".equalsIgnoreCase(foto)) {
+            return "default-user.png";
+        }
+        return foto;
+    }
     public List<PersonalModel> listarEstudiantesActivos() {
         Specification<PersonalModel> spec = (root, query, cb) -> {
             Predicate p1 = cb.equal(root.get("estado"), 1); // Activos

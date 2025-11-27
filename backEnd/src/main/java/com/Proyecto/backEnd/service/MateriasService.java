@@ -50,7 +50,7 @@ public class MateriasService {
     public MateriasModel crearMateria(MateriasModel materia) {
         // 1. Validar que la Sigla (PK) no exista
         if (materiasRepo.existsById(materia.getCodmat())) {
-            throw new RuntimeException("La sigla'" + materia.getCodmat() + "' ya existe.");
+            throw new RuntimeException("La sigla" + materia.getCodmat() + "' ya existe.");
         }
 
         // 2. Buscar y adjuntar el Nivel (el frontend solo envía el codn)

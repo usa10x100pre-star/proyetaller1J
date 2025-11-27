@@ -126,9 +126,9 @@
             class="odd:bg-sky-50 even:bg-white hover:bg-amber-50/80 transition-colors"
           >
             <!-- Foto -->
-            <td class="px-6 py-3">
+             <td class="px-6 py-3">
                 <img
-                  [src]="apiURL + '/uploads/fotos/' + (u.foto || 'default-user.png')"
+                  [src]="getFotoUrl(u.foto)"
                   alt="foto usuario"
                   class="w-12 h-12 rounded-lg object-cover border border-indigo-200 shadow-sm"
                 />

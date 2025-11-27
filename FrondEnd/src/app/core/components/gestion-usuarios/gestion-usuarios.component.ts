@@ -53,7 +53,14 @@ export class GestionUsuariosComponent implements OnInit {
     private personalService: PersonalService,
     private notificationService: NotificationService
   ) { }
+ getFotoUrl(foto?: string | null): string {
+    const fallback = 'default-user.png';
+    const nombreFoto = (!foto || foto.trim() === '' || foto === 'null' || foto === 'undefined')
+      ? fallback
+      : foto;
 
+    return `${this.apiURL}/uploads/fotos/${nombreFoto}`;
+  }
   /**
    * Muestra un error amigable usando el mensaje del backend si está disponible.
    */
