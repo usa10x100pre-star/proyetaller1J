@@ -44,7 +44,7 @@ public class PersonalService {
             personal.setFoto(nombreFoto);
         } else {
             System.out.println("⚠️ Persona sin foto, se usará la imagen por defecto.");
-            personal.setFoto("1760322929192_yas1.jpg");
+            personal.setFoto("default-user.png");
         }
 
         PersonalModel guardado = personalRepo.save(personal);
@@ -71,7 +71,7 @@ public class PersonalService {
         if (datos.getFoto() != null && datos.getFoto().equals("DEFAULT")) {
             // Si el frontend manda "DEFAULT", forzamos la imagen por defecto
             System.out.println("🔄 Reseteando foto a default.");
-            p.setFoto("1760322929192_yas1.jpg");
+            p.setFoto("default-user.png");
         } else if (nuevaFoto != null && !nuevaFoto.isEmpty()) {
             // Si viene un archivo nuevo, lo guardamos
             String nombreArchivo = guardarFoto(nuevaFoto);
@@ -115,9 +115,9 @@ public class PersonalService {
         // EVITAR DUPLICAR LA FOTO POR DEFECTO
         // Si el archivo se llama igual que la default, retornamos el nombre fijo y NO
         // guardamos nada.
-        if ("1760322929192_yas1.jpg".equals(archivo.getOriginalFilename())) {
+        if ("default-user.png".equals(archivo.getOriginalFilename())) {
             System.out.println("⚠️ Se intentó subir la foto default. Usando la existente.");
-            return "1760322929192_yas1.jpg";
+            return "default-user.png";
         }
 
         // ✅ Ruta absoluta dentro del backend
