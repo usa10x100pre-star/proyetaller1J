@@ -11,7 +11,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class GestionUsuariosComponent implements OnInit {
   usuarios: Personal[] = [];
-  //FILTROS 
+  //FILTROS
   filtro = '';
   filtroEstado = 'TODOS';
   filtroTipo = '';
@@ -54,6 +54,14 @@ export class GestionUsuariosComponent implements OnInit {
     private notificationService: NotificationService
   ) { }
 
+  /**
+   * Muestra un error amigable usando el mensaje del backend si está disponible.
+   */
+  private manejarError(err: any, mensajePorDefecto: string): void {
+    const mensaje = err?.error?.mensaje || err?.message || mensajePorDefecto;
+    this.notificationService.showError(mensaje);
+  }
+
   ngOnInit(): void {
     this.cargarUsuarios();
   }
@@ -66,7 +74,10 @@ export class GestionUsuariosComponent implements OnInit {
       next: (data) => {
         this.usuarios = data.map(p => ({ ...p, tieneClave: p['tieneClave'] ?? false }));
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error('Error al cargar usuarios:', err);
+        this.manejarError(err, 'Error al cargar usuarios');
+      }
     });
   }
 
@@ -106,7 +117,7 @@ export class GestionUsuariosComponent implements OnInit {
             },
             error: (err) => {
               console.error('Error al guardar en DATOS:', err);
-              this.notificationService.showError('Error al guardar datos complementarios');
+              this.manejarError(err, 'Error al guardar datos complementarios');
             },
           });
         } else {
@@ -117,7 +128,7 @@ export class GestionUsuariosComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al guardar persona:', err);
-        this.notificationService.showError('Error al crear persona');
+        this.manejarError(err, 'Error al crear persona');
       },
     });
   }
@@ -143,7 +154,7 @@ export class GestionUsuariosComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al modificar persona:', err);
-          this.notificationService.showError('Error al modificar persona');
+          this.manejarError(err, 'Error al modificar persona');
         },
       });
   }
@@ -187,7 +198,7 @@ export class GestionUsuariosComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al actualizar estado:', err);
-        this.notificationService.showError('Error al actualizar estado');
+        this.manejarError(err, 'Error al actualizar estado');
       },
     });
   }
@@ -267,7 +278,7 @@ export class GestionUsuariosComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al modificar acceso:', err);
-          this.notificationService.showError('Error al modificar acceso');
+          this.manejarError(err, 'Error al modificar acceso');
         },
       });
     } else {
@@ -280,7 +291,7 @@ export class GestionUsuariosComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al crear acceso:', err);
-          this.notificationService.showError('Error al crear acceso');
+          this.manejarError(err, 'Error al crear acceso');
         },
       });
     }

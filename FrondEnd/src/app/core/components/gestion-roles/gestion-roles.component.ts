@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RolesService, } from '../../servicios/roles.service';
+import { RolesService } from '../../servicios/roles.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { PageResponse, Role } from '../../models/auth-response.model';
 
@@ -36,6 +36,14 @@ export class GestionRolesComponent implements OnInit {
     private notificationService: NotificationService
   ) { }
 
+  /**
+   * Muestra un error amigable usando el mensaje del backend si está disponible.
+   */
+  private manejarError(err: any, mensajePorDefecto: string): void {
+    const mensaje = err?.error?.mensaje || err?.message || mensajePorDefecto;
+    this.notificationService.showError(mensaje);
+  }
+
   ngOnInit(): void {
     this.cargarRoles();
   }
@@ -55,7 +63,10 @@ export class GestionRolesComponent implements OnInit {
         this.totalPaginas = response.totalPages;
         this.paginaActual = response.number + 1; // Spring es 0-based
       },
-      error: (err) => console.error('Error al cargar roles:', err)
+      error: (err) => {
+        console.error('Error al cargar roles:', err);
+        this.manejarError(err, 'Error al cargar roles');
+      }
     });
   }
 
@@ -105,7 +116,7 @@ export class GestionRolesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear rol:', err);
-        this.notificationService.showError('Error al crear rol');
+        this.manejarError(err, 'Error al crear rol');
       }
     });
   }
@@ -127,7 +138,7 @@ export class GestionRolesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al modificar rol:', err);
-        this.notificationService.showError('Error al modificar rol');
+        this.manejarError(err, 'Error al modificar rol');
       }
     });
   }
@@ -169,7 +180,7 @@ export class GestionRolesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al actualizar estado del rol:', err);
-        this.notificationService.showError('Error al actualizar estado del rol');
+        this.manejarError(err, 'Error al actualizar estado del rol');
       },
     });
   }
