@@ -152,12 +152,16 @@
 
             <!-- Botón Items (B-12.2) -->
             <td class="px-6 py-3 text-center">
-              <button
-                title="Gestionar Items (B-12.2)"
-                class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-indigo-900 shadow-sm transition"
-              >
-                <i class="fa-solid fa-list-check"></i>
-              </button>
+               <label class="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="materiaItem"
+                  [checked]="materiaSeleccionadaParaItems?.codmat === m.codmat"
+                  (change)="abrirPanelItems(m)"
+                  class="accent-amber-500 w-4 h-4"
+                />
+                <span class="text-sm font-semibold text-amber-700">Items</span>
+              </label>
             </td>
 
             <!-- Estado -->
@@ -359,7 +363,88 @@
       </div>
     </div>
     <!-- FIN del Panel B-12.1 -->
+ <!-- Panel de Gestión Items (B-12.2) -->
+    <div
+      *ngIf="materiaSeleccionadaParaItems"
+      class="mt-8 p-6 bg-white/95 rounded-2xl shadow-lg border border-amber-200"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-2xl font-bold text-amber-800">
+          Gestión Items para:
+          <span class="text-indigo-800">{{ materiaSeleccionadaParaItems.nombre }}</span>
+          <span class="text-slate-500 font-medium ml-2">(Gestión: {{ gestionActual }})</span>
+        </h3>
+        <button
+          (click)="cerrarPanelItems()"
+          class="text-slate-400 hover:text-red-500 transition"
+        >
+          <i class="fa-solid fa-xmark fa-2x"></i>
+        </button>
+      </div>
 
+      <div class="flex gap-4 mb-4 pb-4 border-b border-amber-100 flex-wrap items-end">
+        <select
+          [(ngModel)]="itemParaAnadir"
+          class="w-full max-w-xs px-4 py-2 border border-amber-200 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none bg-white"
+        >
+          <option [value]="0" disabled>-- Seleccione un ítem para añadir --</option>
+          <option *ngFor="let item of listaItemsActivos" [value]="item.codi">{{ item.nombre }}</option>
+        </select>
+
+        <input
+          type="number"
+          [(ngModel)]="ponderacionParaAnadir"
+          placeholder="Ponderación"
+          class="w-full max-w-[140px] px-4 py-2 border border-amber-200 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none bg-white"
+        />
+
+        <button
+          (click)="anadirItem()"
+          [disabled]="itemParaAnadir === 0"
+          class="bg-gradient-to-r from-amber-500 via-amber-400 to-indigo-600 hover:from-amber-600 hover:via-amber-500 hover:to-indigo-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center gap-2 transition disabled:bg-slate-400 disabled:cursor-not-allowed"
+        >
+          <i class="fa-solid fa-plus"></i> Añadir Ítem
+        </button>
+      </div>
+
+      <h4 class="text-lg font-semibold text-amber-800 mb-2">Items Asignados</h4>
+      <div class="overflow-y-auto max-h-60 rounded-xl border border-amber-100">
+        <table class="w-full bg-white">
+          <thead class="bg-amber-50">
+            <tr>
+              <th class="p-2 text-left text-slate-800 text-sm">Ítem</th>
+              <th class="p-2 text-left text-slate-800 text-sm">Ponderación</th>
+              <th class="p-2 text-center text-slate-800 text-sm">Estado</th>
+              <th class="p-2 text-center text-slate-800 text-sm">B. (Eliminar)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-amber-100">
+            <tr *ngIf="itemsAsignados.length === 0">
+              <td colspan="4" class="p-4 text-center text-slate-500 text-sm bg-slate-50">
+                Esta materia no tiene items asignados en esta gestión.
+              </td>
+            </tr>
+            <tr *ngFor="let itemat of itemsAsignados" class="hover:bg-amber-50/80 transition-colors">
+              <td class="p-3 font-medium text-slate-900">{{ itemat.item.nombre }}</td>
+              <td class="p-3 text-slate-800">{{ itemat.ponderacion }}</td>
+              <td class="p-3 text-center">
+                <i *ngIf="itemat.estado === 1" class="fa-solid fa-thumbs-up text-emerald-600" title="Activo"></i>
+                <i *ngIf="itemat.estado === 0" class="fa-solid fa-thumbs-down text-red-600" title="Inactivo"></i>
+              </td>
+              <td class="p-3 text-center">
+                <button
+                  (click)="confirmarEliminarItem(itemat)"
+                  title="Eliminar Ítem"
+                  class="p-2 rounded-full bg-red-100 hover:bg-red-200 text-red-700 shadow-sm transition"
+                >
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <!-- Modales -->
 
     <app-modal-materia

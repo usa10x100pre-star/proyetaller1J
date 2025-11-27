@@ -58,6 +58,16 @@ export interface Item {
   nombre: string;
   estado?: number;
 }
+export interface Itemat {
+  id: {
+    codmat: string;
+    codi: number;
+    gestion: number;
+  };
+  item: Item;
+  ponderacion: number;
+  estado: number;
+}
 export interface Mapa {
   id: {
     codmat: string;

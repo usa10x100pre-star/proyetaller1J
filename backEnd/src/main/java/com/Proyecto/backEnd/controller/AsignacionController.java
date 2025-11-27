@@ -2,6 +2,7 @@ package com.Proyecto.backEnd.controller;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Proyecto.backEnd.model.MapaModel;
+import com.Proyecto.backEnd.model.ItematModel;
 import com.Proyecto.backEnd.service.AsignacionService;
 
 @RestController
@@ -46,6 +48,30 @@ public class AsignacionController {
     public ResponseEntity<Void> asignar(@RequestParam int codm, @RequestParam int codp) {
         asignacionService.asignarMenuProceso(codm, codp);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/itemat/{codmat}")
+    public ResponseEntity<List<ItematModel>> getItemsDeMateria(
+            @PathVariable String codmat,
+            @RequestParam int gestion) {
+        return ResponseEntity.ok(asignacionService.getItemsDeMateria(codmat, gestion));
+    }
+
+    @PostMapping("/itemat")
+    public ResponseEntity<ItematModel> asignarMateriaItem(
+            @RequestParam String codmat,
+            @RequestParam int codi,
+            @RequestParam int gestion,
+            @RequestParam(defaultValue = "0") int ponderacion) {
+        return ResponseEntity.ok(asignacionService.asignarMateriaItem(codmat, codi, gestion, ponderacion));
+    }
+
+    @DeleteMapping("/itemat")
+    public ResponseEntity<Void> desasignarMateriaItem(
+            @RequestParam String codmat,
+            @RequestParam int codi,
+            @RequestParam int gestion) {
+        asignacionService.desasignarMateriaItem(codmat, codi, gestion);
+        return ResponseEntity.noContent().build();
     }
 @GetMapping("/mapa/{codmat}")
     public ResponseEntity<List<MapaModel>> getParalelosDeMateria(

@@ -5,8 +5,8 @@ import { ParalelosService } from '../../servicios/paralelos.service';
 import { GeneralService } from '../../servicios/general.service';
 import { AsignacionService } from '../../servicios/asignacion.service';
 import { NotificationService } from '../../servicios/notification.service';
-import { Materia, Nivel, Paralelo, Mapa, PageResponse } from '../../models/auth-response.model'; // Ajusta la ruta
-
+import { ItemsService } from '../../servicios/items.service';
+import { Materia, Nivel, Paralelo, Mapa, PageResponse, Item, Itemat } from '../../models/auth-response.model'; // Ajusta la ruta
 @Component({
   selector: 'app-gestion-materias',
   standalone: false,
@@ -26,6 +26,14 @@ export class GestionMateriasComponent implements OnInit {
   gestionActual: number = new Date().getFullYear();
   mapaParaEliminar: Mapa | null = null;
 
+  // --- Estado B-12.2 (Panel Items) ---
+  materiaSeleccionadaParaItems: Materia | null = null;
+  itemsAsignados: Itemat[] = [];
+  listaItemsActivos: Item[] = [];
+  itemParaAnadir: number = 0;
+  ponderacionParaAnadir: number = 0;
+  itemAsignacionParaEliminar: Itemat | null = null;
+
   filtro = '';
   filtroEstado = 'TODOS';
   paginaActual = 1;
@@ -36,7 +44,7 @@ export class GestionMateriasComponent implements OnInit {
   modoEdicion = false;
   mensajeConfirmacion = '';
   materiaSeleccionada: Materia | null = null;
-  tipoConfirmacion: 'eliminarMateria' | 'habilitarMateria' | 'eliminarParalelo' = 'eliminarMateria';
+  tipoConfirmacion: 'eliminarMateria' | 'habilitarMateria' | 'eliminarParalelo' | 'eliminarItem' = 'eliminarMateria';
 
   constructor(
     private materiasService: MateriasService,
@@ -44,13 +52,15 @@ export class GestionMateriasComponent implements OnInit {
     private paralelosService: ParalelosService,
     private generalService: GeneralService,
     private asignacionService: AsignacionService,
-    private notificationService: NotificationService
+     private notificationService: NotificationService,
+    private itemsService: ItemsService
   ) { }
 
   ngOnInit(): void {
     this.cargarMaterias();
     this.cargarNivelesParaDropdown();
     this.cargarDatosDelPanelParalelos();
+     this.cargarItemsActivos();
   }
 
   // ============================
@@ -80,6 +90,16 @@ export class GestionMateriasComponent implements OnInit {
     });
   }
 
+  cargarItemsActivos(): void {
+    this.itemsService.listarActivos().subscribe({
+      next: (items) => {
+        this.listaItemsActivos = items;
+      },
+      error: (err) => {
+        console.error('Error al cargar items activos:', err);
+      }
+    });
+  }
   cargarNivelesParaDropdown(): void {
     this.nivelesService.listarActivos().subscribe({
       next: (niveles) => {
@@ -231,6 +251,8 @@ export class GestionMateriasComponent implements OnInit {
       this.ejecutarConfirmacionMateria();
     } else if (this.tipoConfirmacion === 'eliminarParalelo') {
       this.ejecutarConfirmacionParalelo();
+       } else if (this.tipoConfirmacion === 'eliminarItem') {
+      this.ejecutarConfirmacionItem();
     }
   }
 
@@ -265,6 +287,7 @@ export class GestionMateriasComponent implements OnInit {
     this.modalConfirmVisible = false;
     this.materiaSeleccionada = null;
     this.mapaParaEliminar = null;
+    this.itemAsignacionParaEliminar = null;
   }
 
   // ==========================
@@ -365,6 +388,91 @@ export class GestionMateriasComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar asignación:', err);
+        this.cerrarModalConfirmacion();
+      }
+    });
+  }
+   // ========================
+  // Panel Items (B-12.2)
+  // ========================
+
+  abrirPanelItems(materia: Materia): void {
+    if (this.materiaSeleccionadaParaItems?.codmat === materia.codmat) {
+      this.cerrarPanelItems();
+    } else {
+      this.materiaSeleccionadaParaItems = materia;
+      this.itemParaAnadir = 0;
+      this.ponderacionParaAnadir = 0;
+      this.cargarItemsAsignados();
+    }
+  }
+
+  cerrarPanelItems(): void {
+    this.materiaSeleccionadaParaItems = null;
+    this.itemsAsignados = [];
+  }
+
+  cargarItemsAsignados(): void {
+    if (!this.materiaSeleccionadaParaItems) return;
+
+    const codmat = this.materiaSeleccionadaParaItems.codmat;
+    this.asignacionService.getItemsDeMateria(codmat, this.gestionActual).subscribe({
+      next: (data) => {
+        this.itemsAsignados = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar items asignados:', err);
+        this.itemsAsignados = [];
+      }
+    });
+  }
+
+  anadirItem(): void {
+    if (this.itemParaAnadir === 0 || !this.materiaSeleccionadaParaItems) {
+      alert('Seleccione un ítem válido.');
+      return;
+    }
+
+    const yaAsignado = this.itemsAsignados.some(asig => asig.item.codi === this.itemParaAnadir);
+    if (yaAsignado) {
+      alert('Este ítem ya está asignado a la materia en esta gestión.');
+      this.itemParaAnadir = 0;
+      return;
+    }
+
+    const codmat = this.materiaSeleccionadaParaItems.codmat;
+    this.asignacionService.asignarMateriaItem(codmat, this.itemParaAnadir, this.gestionActual, this.ponderacionParaAnadir).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Ítem asignado correctamente');
+        this.itemParaAnadir = 0;
+        this.ponderacionParaAnadir = 0;
+        this.cargarItemsAsignados();
+      },
+      error: (err) => {
+        console.error('Error al añadir ítem:', err);
+      }
+    });
+  }
+
+  confirmarEliminarItem(itemat: Itemat): void {
+    this.tipoConfirmacion = 'eliminarItem';
+    this.itemAsignacionParaEliminar = itemat;
+    this.mensajeConfirmacion = `¿Seguro de Eliminar el ítem "${itemat.item.nombre}" de la materia?`;
+    this.modalConfirmVisible = true;
+  }
+
+  private ejecutarConfirmacionItem(): void {
+    if (!this.itemAsignacionParaEliminar) return;
+
+    const { codmat, codi, gestion } = this.itemAsignacionParaEliminar.id;
+    this.asignacionService.desasignarMateriaItem(codmat, codi, gestion).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Ítem desasignado correctamente');
+        this.cargarItemsAsignados();
+        this.cerrarModalConfirmacion();
+      },
+      error: (err) => {
+        console.error('Error al eliminar asignación de ítem:', err);
         this.cerrarModalConfirmacion();
       }
     });

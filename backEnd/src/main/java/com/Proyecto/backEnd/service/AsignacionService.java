@@ -2,23 +2,29 @@ package com.Proyecto.backEnd.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Proyecto.backEnd.model.MapaId;
 import com.Proyecto.backEnd.model.MapaModel;
+import com.Proyecto.backEnd.model.ItematId;
+import com.Proyecto.backEnd.model.ItematModel;
+import com.Proyecto.backEnd.model.ItemsModel;
 import com.Proyecto.backEnd.model.MateriasModel;
 import com.Proyecto.backEnd.model.MenusModel;
 import com.Proyecto.backEnd.model.ParalelosModel;
 import com.Proyecto.backEnd.model.ProcesosModel;
 import com.Proyecto.backEnd.model.RolesModel;
 import com.Proyecto.backEnd.model.UsuariosModel;
+import com.Proyecto.backEnd.repository.ItematRepo;
 import com.Proyecto.backEnd.repository.MapaRepo;
 import com.Proyecto.backEnd.repository.MateriasRepo;
 import com.Proyecto.backEnd.repository.MenusRepo;
 import com.Proyecto.backEnd.repository.ParalelosRepo;
 import com.Proyecto.backEnd.repository.ProcesosRepo;
 import com.Proyecto.backEnd.repository.RolesRepo;
+import com.Proyecto.backEnd.repository.ItemsRepo;
 import com.Proyecto.backEnd.repository.UsuariosRepo;
 import jakarta.transaction.Transactional;
 
@@ -41,7 +47,13 @@ public class AsignacionService {
 
     @Autowired
     private ParalelosRepo paralelosRepo; //
+    
+    @Autowired
+    private ItematRepo itematRepo;
 
+    @Autowired
+    private ItemsRepo itemsRepo;
+    
     @Transactional
     public List<MapaModel> getParalelosDeMateria(String codmat, int gestion) {
         return mapaRepo.findById_CodmatAndId_Gestion(codmat, gestion);
@@ -106,6 +118,58 @@ public class AsignacionService {
         }
         mapaRepo.deleteById(id);
     }
+    
+ // =======================
+    // Gestión ITEMAT (B-12.2)
+    // =======================
+
+    @Transactional
+    public List<ItematModel> getItemsDeMateria(String codmat, int gestion) {
+        List<ItematModel> asignaciones = itematRepo.findById_CodmatAndId_Gestion(codmat, gestion);
+        asignaciones.forEach(asignacion -> asignacion.getItem().getNombre());
+        return asignaciones;
+    }
+
+    @Transactional
+    public ItematModel asignarMateriaItem(String codmat, int codi, int gestion, int ponderacion) {
+        MateriasModel materia = materiasRepo.findById(codmat)
+            .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
+        ItemsModel item = itemsRepo.findById(codi)
+            .orElseThrow(() -> new RuntimeException("Item no encontrado"));
+
+        ItematId id = new ItematId();
+        id.setCodmat(codmat);
+        id.setCodi(codi);
+        id.setGestion(gestion);
+
+        if (itematRepo.existsById(id)) {
+            throw new RuntimeException("Este ítem ya está asignado a la materia en esta gestión.");
+        }
+
+        ItematModel asignacion = new ItematModel();
+        asignacion.setId(id);
+        asignacion.setMateria(materia);
+        asignacion.setItem(item);
+        asignacion.setPonderacion(ponderacion);
+        asignacion.setEstado(1);
+
+        return itematRepo.save(asignacion);
+    }
+
+    @Transactional
+    public void desasignarMateriaItem(String codmat, int codi, int gestion) {
+        ItematId id = new ItematId();
+        id.setCodmat(codmat);
+        id.setCodi(codi);
+        id.setGestion(gestion);
+
+        if (!itematRepo.existsById(id)) {
+            throw new RuntimeException("Asignación de ítem no encontrada.");
+        }
+
+        itematRepo.deleteById(id);
+    }
+    
     // --- B-7 (MEPRO) ---
     @Transactional
     public void asignarMenuProceso(int codm, int codp) {

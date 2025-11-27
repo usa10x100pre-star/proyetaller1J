@@ -3,8 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthServiceService } from './auth.service.service';
-import { Mapa, MapaActivo, Menu, PageResponse, Proceso, Role, Usuario } from '../models/auth-response.model';
-
+import { Itemat, Mapa, MapaActivo, Menu, PageResponse, Proceso, Role, Usuario } from '../models/auth-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -256,6 +255,16 @@ const token = this.authService.getToken();
     });
   }
 
+  getItemsDeMateria(codmat: string, gestion: number): Observable<Itemat[]> {
+    let params = new HttpParams()
+      .set('gestion', gestion.toString());
+
+    return this.http.get<Itemat[]>(`${this.apiURL}/itemat/${codmat}`, {
+      headers: this.getAuthHeaders(),
+      params: params
+    });
+  }
+
   /**
    * B-12.1. Asigna un paralelo a una materia (crea en MAPA)
    */
@@ -271,6 +280,19 @@ const token = this.authService.getToken();
     });
   }
 
+   asignarMateriaItem(codmat: string, codi: number, gestion: number, ponderacion: number): Observable<Itemat> {
+    let params = new HttpParams()
+      .set('codmat', codmat)
+      .set('codi', codi.toString())
+      .set('gestion', gestion.toString())
+      .set('ponderacion', ponderacion.toString());
+
+    return this.http.post<Itemat>(`${this.apiURL}/itemat`, null, {
+      headers: this.getAuthHeaders(),
+      params: params
+    });
+  }
+
   /**
    * B-12.1. Elimina la asignación de un paralelo (elimina de MAPA)
    */
@@ -281,6 +303,17 @@ const token = this.authService.getToken();
       .set('gestion', gestion.toString());
 
     return this.http.delete<void>(`${this.apiURL}/mapa`, {
+      headers: this.getAuthHeaders(),
+      params: params
+    });
+  }
+   desasignarMateriaItem(codmat: string, codi: number, gestion: number): Observable<void> {
+    let params = new HttpParams()
+      .set('codmat', codmat)
+      .set('codi', codi.toString())
+      .set('gestion', gestion.toString());
+
+    return this.http.delete<void>(`${this.apiURL}/itemat`, {
       headers: this.getAuthHeaders(),
       params: params
     });

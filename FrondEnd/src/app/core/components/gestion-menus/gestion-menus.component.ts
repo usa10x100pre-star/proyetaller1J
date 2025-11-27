@@ -107,13 +107,16 @@ export class GestionMenusComponent implements OnInit {
   // B-6.2. Modificar Menú
   abrirModalEditar(menu: Menu): void {
     this.modoEdicion = true;
-    this.menuSeleccionado = menu;
+     // Clonamos para preservar el codm incluso si el modal modifica el objeto
+    this.menuSeleccionado = { ...menu };
     this.modalMenuVisible = true;
   }
 
   modificarMenu(menu: Menu): void {
-    if (!menu.codm) return;
-    this.menusService.modificar(menu.codm, menu).subscribe({
+    const codm = menu.codm ?? this.menuSeleccionado?.codm;
+    if (!codm) return;
+
+    this.menusService.modificar(codm, { ...menu, codm }).subscribe({
       next: () => {
         this.notificationService.showSuccess('Menú modificado correctamente');
         this.cargarMenus();

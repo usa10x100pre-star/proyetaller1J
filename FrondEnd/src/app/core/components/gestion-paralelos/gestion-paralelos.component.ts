@@ -92,6 +92,17 @@ export class GestionParalelosComponent implements OnInit {
   }
 
   guardarParalelo(paralelo: Paralelo): void {
+     const nombre = paralelo.nombre?.trim();
+    if (!nombre) {
+      this.notificationService.showError('El nombre del paralelo es obligatorio.');
+      return;
+    }
+
+    const existeDuplicado = this.paralelos.some(p => p.nombre?.trim().toLowerCase() === nombre.toLowerCase());
+    if (existeDuplicado) {
+      this.notificationService.showError('Ya existe un paralelo con ese nombre.');
+      return;
+    }
     this.paralelosService.crear(paralelo).subscribe({
       next: () => {
         this.notificationService.showSuccess('Paralelo creado correctamente');
