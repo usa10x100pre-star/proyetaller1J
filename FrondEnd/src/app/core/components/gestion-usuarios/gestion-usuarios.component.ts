@@ -216,8 +216,8 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
 
-  imprimirUsuarios(): void {
-    const usuarios = this.filtrar();
+  imprimirUsuarios(persona?: Personal): void {
+    const usuarios = persona ? [persona] : this.filtrar();
 
     const printWindow = window.open('', '_blank', 'width=900,height=650');
     if (!printWindow) {
@@ -260,9 +260,32 @@ export class GestionUsuariosComponent implements OnInit {
     `);
 
     printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
+   const finalizarImpresion = () => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    };
+
+    const imagenes = Array.from(printWindow.document.images);
+    if (imagenes.length === 0) {
+      finalizarImpresion();
+      return;
+    }
+
+    let cargadas = 0;
+    const intentarFinalizar = () => {
+      cargadas += 1;
+      if (cargadas === imagenes.length) finalizarImpresion();
+    };
+
+    imagenes.forEach((img) => {
+      if (img.complete && img.naturalHeight !== 0) {
+        intentarFinalizar();
+      } else {
+        img.onload = intentarFinalizar;
+        img.onerror = intentarFinalizar;
+      }
+    });
   }
 
   cerrarModalPersona(): void {
