@@ -10,6 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class ModalAccesoComponent {
   @Input() modoEdicion = false;
   @Input() usuario: any = {};
+  @Input() personaNombreCompleto = '';
   @Output() cerrar = new EventEmitter<void>();
   @Output() guardar = new EventEmitter<void>();
 }

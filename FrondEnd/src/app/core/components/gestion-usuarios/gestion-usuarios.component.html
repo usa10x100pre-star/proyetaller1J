@@ -274,6 +274,7 @@
       *ngIf="modalAccesoVisible"
       [modoEdicion]="modoAccesoEdicion"
       [usuario]="nuevoAcceso"
+      [personaNombreCompleto]="personaAccesoNombre"
       (cerrar)="cerrarModalAcceso()"
       (guardar)="guardarAcceso()"
     ></app-modal-acceso>

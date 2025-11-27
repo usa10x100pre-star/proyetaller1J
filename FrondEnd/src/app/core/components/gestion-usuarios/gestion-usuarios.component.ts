@@ -310,9 +310,9 @@ export class GestionUsuariosComponent implements OnInit {
       nombre: '',
       ap: '',
       am: '',
-      genero: 'M',
+      genero: '',
       tipo: '',
-      ecivil: 'S',
+      ecivil: '',
       estado: 1,
     };
   }
@@ -320,6 +320,7 @@ export class GestionUsuariosComponent implements OnInit {
   modalAccesoVisible = false;
   modoAccesoEdicion = false;
   personaAcceso: Personal | null = null;
+  personaAccesoNombre = '';
   nuevoAcceso = { login: '', password: '', repetir: '' };
 
   abrirModalAcceso(persona: Personal, edicion: boolean): void {
@@ -331,6 +332,7 @@ export class GestionUsuariosComponent implements OnInit {
 
   cerrarModalAcceso(): void {
     this.modalAccesoVisible = false;
+    this.personaAccesoNombre = '';
   }
 
   // Guardar acceso (crear o modificar)
