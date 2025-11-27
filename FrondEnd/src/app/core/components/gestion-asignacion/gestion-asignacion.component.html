@@ -1,0 +1,207 @@
+<div class="bg-gradient-to-br from-indigo-50 via-sky-50 to-amber-50 text-slate-900 py-12 px-6 rounded-3xl shadow-xl font-[Times_New_Roman]">
+  <div class="max-w-7xl mx-auto">
+
+    <h2
+      class="text-3xl md:text-4xl font-extrabold text-indigo-950 mb-8 border-b-4 border-amber-400 pb-2 tracking-tight flex items-center gap-3"
+    >
+      <span
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-700 to-amber-400 text-white text-xl shadow-md"
+      >
+        M
+      </span>
+      <span>Asignación Procesos a Menú</span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Lista de Menús -->
+      <div class="bg-white/95 p-6 rounded-2xl shadow-lg border border-indigo-900/10">
+        <h3 class="text-2xl font-bold text-indigo-950 mb-4">
+          Lista de Menús
+        </h3>
+
+        <input
+          type="text"
+          [(ngModel)]="menuFiltro"
+          (keyup.enter)="cargarMenus()"
+          placeholder="Filtrar Menús..."
+          class="w-full px-4 py-2 mb-4 border border-indigo-800/30 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none bg-slate-50"
+        />
+
+        <div class="overflow-y-auto h-96 rounded-xl border border-slate-200/70">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-900 to-blue-800 text-white text-sm">
+                <th class="p-2 w-12 text-center">#</th>
+                <th class="p-2 text-left">Lista de Menús</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let menu of menus"
+                class="border-b border-slate-100 odd:bg-sky-50 even:bg-white hover:bg-amber-50/70 transition-colors"
+              >
+                <td class="p-3 text-center">
+                  <input
+                    type="radio"
+                    name="menuSeleccionado"
+                    [value]="menu.codm"
+                    [(ngModel)]="menuSeleccionadoCodm"
+                    (change)="onMenuSelected()"
+                    class="accent-indigo-900 h-5 w-5 cursor-pointer"
+                  />
+                </td>
+                <td class="p-3 font-medium text-slate-900">
+                  {{ menu.nombre }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          class="flex justify-center items-center gap-3 mt-4 text-sm"
+          *ngIf="totalPaginasMenu > 1"
+        >
+          <button
+            (click)="cambiarPaginaMenu(paginaActualMenu - 1)"
+            [disabled]="paginaActualMenu === 1"
+            class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+          >
+            ‹
+          </button>
+          <span class="text-slate-700">
+            Pág {{ paginaActualMenu }} de {{ totalPaginasMenu }}
+          </span>
+          <button
+            (click)="cambiarPaginaMenu(paginaActualMenu + 1)"
+            [disabled]="paginaActualMenu === totalPaginasMenu"
+            class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Procesos -->
+      <div class="bg-white/95 p-6 rounded-2xl shadow-lg border border-indigo-900/10">
+        <h3 class="text-2xl font-bold text-indigo-950 mb-4">
+          Lista de Procesos
+        </h3>
+
+        <div class="flex flex-col gap-3 mb-4">
+          <div class="flex gap-4">
+            <input
+              type="text"
+              [(ngModel)]="procesoFiltro"
+              (keyup.enter)="cargarProcesos()"
+              placeholder="Filtrar Procesos..."
+              class="flex-1 px-4 py-2 border border-indigo-800/30 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400"
+              [disabled]="!menuSeleccionadoCodm"
+            />
+          </div>
+
+          <div
+            class="flex flex-wrap gap-4 items-center text-sm text-slate-800"
+          >
+            <label class="flex items-center gap-1">
+              <input
+                type="radio"
+                value="TODOS"
+                [(ngModel)]="filtroAsignado"
+                (change)="onFiltroAsignadoChange()"
+                name="filtroAsignado"
+                class="accent-indigo-900 cursor-pointer"
+                [disabled]="!menuSeleccionadoCodm"
+              />
+              <span>Todos</span>
+            </label>
+            <label class="flex items-center gap-1">
+              <input
+                type="radio"
+                value="SI"
+                [(ngModel)]="filtroAsignado"
+                (change)="onFiltroAsignadoChange()"
+                name="filtroAsignado"
+                class="accent-indigo-900 cursor-pointer"
+                [disabled]="!menuSeleccionadoCodm"
+              />
+              <span>SI Asignados</span>
+            </label>
+            <label class="flex items-center gap-1">
+              <input
+                type="radio"
+                value="NO"
+                [(ngModel)]="filtroAsignado"
+                (change)="onFiltroAsignadoChange()"
+                name="filtroAsignado"
+                class="accent-indigo-900 cursor-pointer"
+                [disabled]="!menuSeleccionadoCodm"
+              />
+              <span>NO Asignados</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="overflow-y-auto h-96 rounded-xl border border-slate-200/70">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-indigo-900 to-blue-800 text-white text-sm">
+                <th class="p-2 w-12 text-center">#</th>
+                <th class="p-2 text-left">Lista de Procesos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!menuSeleccionadoCodm">
+                <td colspan="2" class="p-6 text-center text-slate-500 text-sm">
+                  Seleccione un Menú de la izquierda para ver los procesos.
+                </td>
+              </tr>
+
+              <tr
+                *ngFor="let proceso of procesos"
+                class="border-b border-slate-100 odd:bg-sky-50 even:bg-white hover:bg-amber-50/70 transition-colors"
+              >
+                <td class="p-3 text-center">
+                  <input
+                    type="checkbox"
+                    [checked]="proceso.asignado"
+                    (change)="onProcesoToggle(proceso, $event)"
+                    class="accent-indigo-900 h-5 w-5 cursor-pointer"
+                  />
+                </td>
+                <td class="p-3 font-medium text-slate-900">
+                  {{ proceso.nombre }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          class="flex justify-center items-center gap-3 mt-4 text-sm"
+          *ngIf="totalPaginasProceso > 1"
+        >
+          <button
+            (click)="cambiarPaginaProceso(paginaActualProceso - 1)"
+            [disabled]="paginaActualProceso === 1"
+            class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+          >
+            ‹
+          </button>
+          <span class="text-slate-700">
+            Pág {{ paginaActualProceso }} de {{ totalPaginasProceso }}
+          </span>
+          <button
+            (click)="cambiarPaginaProceso(paginaActualProceso + 1)"
+            [disabled]="paginaActualProceso === totalPaginasProceso"
+            class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

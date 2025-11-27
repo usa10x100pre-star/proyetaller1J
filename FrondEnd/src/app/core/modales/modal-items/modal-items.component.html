@@ -1,0 +1,50 @@
+<div
+  class="fixed inset-0 bg-indigo-950/60 backdrop-blur-sm flex items-center justify-center z-50 font-[Times_New_Roman]"
+>
+  <div
+    class="bg-gradient-to-br from-white via-slate-50 to-indigo-50 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-900/30"
+  >
+    <!-- Título -->
+    <h3
+      class="text-2xl md:text-3xl font-extrabold text-indigo-950 mb-6 tracking-wide text-center border-b-2 border-amber-400 pb-3"
+    >
+      {{ modoEdicion ? 'Modificar Datos de Items' : 'Adicionar Items' }}
+    </h3>
+
+    <!-- Contenido -->
+    <div class="space-y-4">
+      <div>
+        <label
+          for="nombreItem"
+          class="block text-left text-sm font-semibold text-indigo-900/80 mb-1"
+        >
+          Nombre del Item:
+        </label>
+        <input
+          type="text"
+          id="nombreItem"
+          [(ngModel)]="item.nombre"
+          class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm bg-white/90
+                 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none placeholder-indigo-900/60"
+        />
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-center gap-6 mt-8">
+      <button
+        (click)="guardar.emit(item)"
+        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white px-6 py-2.5 rounded-full font-semibold shadow-md hover:shadow-lg transition-transform duration-200 hover:-translate-y-[1px]"
+      >
+        {{ modoEdicion ? 'Modificar' : 'Guardar' }}
+      </button>
+
+      <button
+        (click)="cerrar.emit()"
+        class="bg-white border border-indigo-900/70 text-indigo-950 px-6 py-2.5 rounded-full font-semibold hover:bg-slate-50 shadow-sm hover:shadow-md transition"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>

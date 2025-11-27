@@ -1,0 +1,237 @@
+<div
+  class="bg-gradient-to-br from-indigo-50 via-sky-50 to-amber-50 text-slate-900 py-12 px-6 rounded-3xl shadow-xl font-[Times_New_Roman]"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- Título -->
+    <h2
+      class="text-3xl md:text-4xl font-extrabold text-indigo-950 mb-8 border-b-4 border-amber-400 pb-2 tracking-tight flex items-center gap-3"
+    >
+      <span
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-700 to-amber-400 text-white text-xl shadow-md"
+      >
+        I
+      </span>
+      <span>Gestión Inscripción Materias - Alumnos</span>
+    </h2>
+
+    <!-- Filtros -->
+    <div
+      class="flex flex-col md:flex-row items-center gap-4 mb-8 flex-wrap bg-white/70 rounded-2xl px-4 py-4 shadow-sm border border-indigo-900/10"
+    >
+      <!-- Filtro texto -->
+      <div class="flex items-center gap-2 flex-1 w-full">
+        <input
+          type="text"
+          [(ngModel)]="filtro"
+          (keyup.enter)="onFiltroChange()"
+          placeholder="Filtrar por Materia o Alumno..."
+          class="w-full px-4 py-2 border border-indigo-800/30 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none bg-slate-50 placeholder-indigo-900/50"
+        />
+      </div>
+
+      <!-- Nivel -->
+      <select
+        [(ngModel)]="filtroNivel"
+        (change)="onFiltroChange()"
+        class="px-3 py-2 border border-indigo-800/30 rounded-xl shadow-sm bg-white text-indigo-950 focus:ring-2 focus:ring-amber-400 focus:outline-none min-w-[190px]"
+      >
+        <option [value]="0">Todos los Niveles</option>
+        <option *ngFor="let n of listaNivelesActivos" [value]="n.codn">
+          {{ n.nombre }}
+        </option>
+      </select>
+
+      <!-- Estado -->
+      <div class="flex gap-4 items-center text-sm text-slate-900">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="estadoFiltro"
+            value="TODOS"
+            [(ngModel)]="filtroEstado"
+            (change)="onEstadoChange()"
+            class="accent-indigo-900"
+          />
+          <span class="font-medium">Todos</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="estadoFiltro"
+            value="ACTIVOS"
+            [(ngModel)]="filtroEstado"
+            (change)="onEstadoChange()"
+            class="accent-indigo-900"
+          />
+          <span class="font-medium">Activos</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="estadoFiltro"
+            value="BAJAS"
+            [(ngModel)]="filtroEstado"
+            (change)="onEstadoChange()"
+            class="accent-indigo-900"
+          />
+          <span class="font-medium">Bajas</span>
+        </label>
+      </div>
+
+      <!-- Botón nueva inscripción -->
+      <button
+        (click)="abrirModalNuevo()"
+        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
+      >
+        <i class="fa-solid fa-plus"></i>
+        <span class="hidden md:inline">Nueva Inscripción</span>
+      </button>
+    </div>
+
+    <!-- Tabla -->
+    <div
+      class="overflow-x-auto shadow-2xl rounded-2xl ring-1 ring-indigo-900/20 bg-white/90"
+    >
+      <table class="w-full bg-white divide-y divide-indigo-100">
+        <thead class="bg-gradient-to-r from-indigo-900 to-blue-800">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Nivel
+            </th>
+            <th
+              class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Materia
+            </th>
+            <th
+              class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Alumno
+            </th>
+            <th
+              class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Paralelo
+            </th>
+            <th
+              class="px-6 py-3 text-center text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Estado
+            </th>
+            <th
+              class="px-6 py-3 text-center text-white font-bold uppercase tracking-wide text-sm"
+            >
+              Acciones
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-indigo-100">
+          <tr
+            *ngFor="let p of inscripciones"
+            class="odd:bg-sky-50 even:bg-white hover:bg-amber-50/80 transition-colors"
+          >
+            <td class="px-6 py-3 text-indigo-900 font-semibold">
+              {{ p.materia?.nivel?.nombre }}
+            </td>
+            <td class="px-6 py-3 text-slate-900 font-medium">
+              {{ p.materia?.nombre }}
+            </td>
+            <td class="px-6 py-3 text-slate-900 font-medium">
+              {{ p.alumno?.ap }} {{ p.alumno?.am }} {{ p.alumno?.nombre }}
+            </td>
+            <td class="px-6 py-3 text-indigo-900 font-medium">
+              {{ p.paralelo?.nombre }}
+            </td>
+            <td class="px-6 py-3 text-center">
+              <i
+                *ngIf="p.estado === 1"
+                class="fa-solid fa-thumbs-up text-emerald-600 fa-lg"
+                title="Activo"
+              ></i>
+              <i
+                *ngIf="p.estado === 0"
+                class="fa-solid fa-thumbs-down text-red-600 fa-lg"
+                title="Inactivo"
+              ></i>
+            </td>
+            <td class="px-6 py-3 flex justify-center gap-3">
+              <!-- Habilitar -->
+              <button
+                *ngIf="p.estado === 0"
+                title="Habilitar"
+                (click)="confirmarHabilitar(p)"
+                class="p-2 rounded-full bg-indigo-900 hover:bg-indigo-800 text-white shadow-md transition"
+              >
+                <i class="fa-solid fa-rotate-right"></i>
+              </button>
+
+              <!-- Dar baja -->
+              <button
+                *ngIf="p.estado === 1"
+                title="Dar baja"
+                (click)="confirmarEliminar(p)"
+                class="p-2 rounded-full bg-red-600/90 hover:bg-red-500 text-white shadow-md transition"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+
+              <!-- Modificar -->
+              <button
+                title="Modificar"
+                (click)="abrirModalEditar(p)"
+                class="p-2 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-900 shadow-md transition"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div
+        class="flex justify-center items-center gap-3 mt-6 pb-6 text-sm"
+        *ngIf="totalPaginas > 1"
+      >
+        <button
+          (click)="cambiarPagina(paginaActual - 1)"
+          [disabled]="paginaActual === 1"
+          class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+        >
+          ‹
+        </button>
+        <span class="text-slate-700">
+          Pág {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+        <button
+          (click)="cambiarPagina(paginaActual + 1)"
+          [disabled]="paginaActual === totalPaginas"
+          class="px-3 py-1 bg-indigo-900 text-white rounded-lg disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-indigo-800 transition-colors"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+
+    <!-- Modales -->
+    <app-modal-inscripcion
+      *ngIf="modalVisible"
+      [modoEdicion]="modoEdicion"
+      [gestion]="gestionActual"
+      [listaMapas]="listaMapasActivos"
+      [listaEstudiantes]="listaEstudiantesActivos"
+      [inscripcionData]="inscripcionSeleccionada"
+      (cerrar)="cerrarModal()"
+      (guardar)="guardarInscripcion($event)"
+    ></app-modal-inscripcion>
+
+    <app-modal-confirmacion
+      *ngIf="modalConfirmVisible"
+      [mensaje]="mensajeConfirmacion"
+      (cerrar)="cerrarModalConfirmacion()"
+      (aceptar)="ejecutarConfirmacion()"
+    ></app-modal-confirmacion>
+  </div>
+</div>

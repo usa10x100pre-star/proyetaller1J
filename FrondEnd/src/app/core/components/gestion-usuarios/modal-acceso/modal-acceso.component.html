@@ -1,0 +1,61 @@
+<div
+  class="fixed inset-0 bg-indigo-950/60 backdrop-blur-sm flex items-center justify-center z-50 font-[Times_New_Roman]"
+>
+  <div
+    class="bg-gradient-to-br from-white via-slate-50 to-indigo-50 rounded-3xl shadow-2xl w-full max-w-md p-8 border border-indigo-900/30"
+  >
+    <!-- Título -->
+    <h2
+      class="text-2xl md:text-3xl font-extrabold text-indigo-950 mb-6 border-b-2 border-amber-400 pb-3 text-center tracking-wide flex items-center justify-center gap-3"
+    >
+      <span
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-700 to-amber-400 text-white text-lg shadow-md"
+      >
+        <i class="fa-solid fa-key"></i>
+      </span>
+      <span>
+        {{ modoEdicion ? 'Modificar Datos de Acceso' : 'Asignar Datos de Acceso' }}
+      </span>
+    </h2>
+
+    <!-- Formulario -->
+    <form class="space-y-5">
+      <input
+        [(ngModel)]="usuario.login"
+        name="login"
+        placeholder="Nombre del Usuario"
+        class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none placeholder-indigo-900/60 bg-white/90"
+      />
+      <input
+        [(ngModel)]="usuario.password"
+        name="password"
+        type="password"
+        placeholder="Password"
+        class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none placeholder-indigo-900/60 bg-white/90"
+      />
+      <input
+        [(ngModel)]="usuario.repetir"
+        name="repetir"
+        type="password"
+        placeholder="Repetir Password"
+        class="w-full px-4 py-2.5 border border-indigo-800/40 rounded-xl shadow-sm focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:outline-none placeholder-indigo-900/60 bg-white/90"
+      />
+    </form>
+
+    <!-- Botones -->
+    <div class="flex justify-end gap-4 mt-8">
+      <button
+        (click)="guardar.emit()"
+        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white px-6 py-2.5 rounded-full font-semibold tracking-wide transition-transform duration-200 shadow-md hover:shadow-lg hover:-translate-y-[1px]"
+      >
+        {{ modoEdicion ? 'Modificar' : 'Guardar' }}
+      </button>
+      <button
+        (click)="cerrar.emit()"
+        class="bg-white border border-indigo-800/70 text-indigo-950 px-6 py-2.5 rounded-full font-semibold tracking-wide hover:bg-slate-50 transition shadow-sm hover:shadow-md"
+      >
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
