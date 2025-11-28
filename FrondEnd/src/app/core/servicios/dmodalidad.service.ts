@@ -7,13 +7,13 @@ import { Dmodalidad, PageResponse } from '../models/auth-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class DmodalidadService {
-  private apiURL = ${environment.apiURL}/api/dmodalidades;
+  private apiURL = `${environment.apiURL}/api/dmodalidades`;
   private http = inject(HttpClient);
   private authService = inject(AuthServiceService);
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.authService.getToken();
-    return new HttpHeaders({ Authorization: Bearer ${token} });
+    return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
   listarPaginado(
@@ -47,20 +47,20 @@ export class DmodalidadService {
   }
 
   modificar(coddm: string, detalle: Dmodalidad): Observable<Dmodalidad> {
-    return this.http.put<Dmodalidad>(${this.apiURL}/${coddm}, detalle, {
+    return this.http.put<Dmodalidad>(`${this.apiURL}/${coddm}`, detalle, {
       headers: this.getAuthHeaders(),
     });
   }
 
   eliminar(coddm: string): Observable<void> {
-    return this.http.delete<void>(${this.apiURL}/${coddm}, {
+    return this.http.delete<void>(`${this.apiURL}/${coddm}`, {
       headers: this.getAuthHeaders(),
     });
   }
 
   habilitar(coddm: string): Observable<void> {
-    return this.http.put<void>(${this.apiURL}/${coddm}/habilitar, {}, {
+    return this.http.put<void>(`${this.apiURL}/${coddm}/habilitar`, {}, {
       headers: this.getAuthHeaders(),
-    });
-  }
+    });
+  }
 }
