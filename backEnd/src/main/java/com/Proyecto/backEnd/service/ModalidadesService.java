@@ -41,9 +41,14 @@ public class ModalidadesService {
      * B-14.1. Adicionar Modalidad
      */
     public ModalidadesModel crearModalidad(ModalidadesModel modalidad) {
-        if (modalidadesRepo.existsByNombreIgnoreCase(modalidad.getNombre())) {
-            throw new RuntimeException("Ya existe una modalidad con el nombre: " + modalidad.getNombre());
+    	 String nombreNormalizado = normalizarNombre(modalidad.getNombre());
+         if (nombreNormalizado.isEmpty()) {
+             throw new RuntimeException("El nombre de la modalidad es obligatorio.");
         }
+         if (modalidadesRepo.existsByNombreIgnoreCase(nombreNormalizado)) {
+             throw new RuntimeException("Ya existe una modalidad con el nombre: " + nombreNormalizado);
+         }
+         modalidad.setNombre(nombreNormalizado);
         modalidad.setEstado(1);
         return modalidadesRepo.save(modalidad);
     }
@@ -55,12 +60,18 @@ public class ModalidadesService {
         ModalidadesModel modalidad = modalidadesRepo.findById(codmod)
             .orElseThrow(() -> new RuntimeException("Modalidad no encontrada con id: " + codmod));
 
-        if (modalidadesRepo.existsByNombreIgnoreCaseAndCodmodNot(datos.getNombre(), codmod)) {
-            throw new RuntimeException("Ya existe una modalidad con el nombre: " + datos.getNombre());
+        String nombreNormalizado = normalizarNombre(modalidad.getNombre());
+        if (nombreNormalizado.isEmpty()) {
+            throw new RuntimeException("El nombre de la modalidad es obligatorio.");
         }
-
-        modalidad.setNombre(datos.getNombre());
+        if (modalidadesRepo.existsByNombreIgnoreCase(nombreNormalizado)) {
+            throw new RuntimeException("Ya existe una modalidad con el nombre: " + nombreNormalizado);
+        }
+        modalidad.setNombre(nombreNormalizado);
         return modalidadesRepo.save(modalidad);
+    }
+    private String normalizarNombre(String nombre) {
+        return nombre == null ? "" : nombre.trim();
     }
 
     /**

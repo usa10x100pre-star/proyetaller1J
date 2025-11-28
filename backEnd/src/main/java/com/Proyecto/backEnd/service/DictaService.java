@@ -126,15 +126,44 @@ public class DictaService {
             // --- Clave Nueva (para crear)
             String newCodmat, int newCodpar, int newCodp, String login) {
         
-        // 1. Crear el ID viejo y borrar la asignación anterior
-        DictaId idViejo = new DictaId(oldCodpar, oldCodp, oldCodmat, oldGestion);
-        if (!dictaRepo.existsById(idViejo)) {
-            throw new RuntimeException("No se encontró la asignación original para modificar.");
-        }
-        dictaRepo.deleteById(idViejo);
+    	 // 1. Buscar la asignación original usando únicamente la combinación
+        //    materia-paralelo-gestión. Así evitamos depender de que el profesor
+        //    "viejo" llegue correcto desde la UI.
+        DictaModel original = dictaRepo
+            .findById_CodmatAndId_CodparAndId_Gestion(oldCodmat, oldCodpar, oldGestion)
+            .orElseThrow(() -> new RuntimeException("No se encontró la asignación original para modificar."));
 
-        // 2. Crear la nueva asignación usando el método que ya teníamos
-        // (La gestión 'oldGestion' se reutiliza como la gestión actual)
-        return this.crearAsignacion(newCodmat, newCodpar, newCodp, oldGestion, login);
+        DictaId idNuevo = new DictaId(newCodpar, newCodp, newCodmat, oldGestion);
+        if (dictaRepo.existsById(idNuevo) && !idNuevo.equals(original.getId())) {
+            throw new RuntimeException("La asignación nueva ya existe para la gestión seleccionada.");
+        }
+
+        // 2. Preparar las entidades nuevas
+        MateriasModel mat = materiasRepo.findById(newCodmat).orElseThrow(() -> new RuntimeException("Materia no encontrada"));
+        ParalelosModel par = paralelosRepo.findById(newCodpar).orElseThrow(() -> new RuntimeException("Paralelo no encontrado"));
+        PersonalModel prof = personalRepo.findById(newCodp).orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        UsuariosModel usu = usuariosRepo.findById(login).orElseThrow(() -> new RuntimeException("Usuario (login) no encontrado"));
+
+        // 3. Si no cambió la clave primaria, solo actualizamos los vínculos
+        if (idNuevo.equals(original.getId())) {
+            original.setMateria(mat);
+            original.setParalelo(par);
+            original.setProfesor(prof);
+            original.setUsuario(usu);
+            return dictaRepo.save(original);
+        }
+        // 4. Crear la asignación nueva y recién al final eliminar la original
+        DictaModel nueva = new DictaModel();
+        nueva.setId(idNuevo);
+        nueva.setMateria(mat);
+        nueva.setParalelo(par);
+        nueva.setProfesor(prof);
+        nueva.setUsuario(usu);
+        nueva.setEstado(original.getEstado());
+
+        DictaModel guardada = dictaRepo.save(nueva);
+        dictaRepo.delete(original);
+
+        return guardada;
     }
 }
