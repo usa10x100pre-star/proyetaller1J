@@ -98,6 +98,16 @@ export interface Modalidad {
   nombre: string;
   estado?: number;
 }
+
+export interface Dmodalidad {
+  coddm?: string;
+  nombre: string;
+  estado?: number;
+  modalidad: {
+    codmod: number;
+    nombre?: string;
+  };
+}
 export interface Usuario {
   login: string;
   estado?: number;

@@ -13,6 +13,7 @@ import { GestionNivelesComponent } from './core/components/gestion-niveles/gesti
 import { GestionMateriasComponent } from './core/components/gestion-materias/gestion-materias.component';
 import { GestionAsignacionDictaComponent } from './core/components/gestion-asignacion-dicta/gestion-asignacion-dicta.component';
 import { GestionModalidadesComponent } from './core/components/gestion-modalidades/gestion-modalidades.component';
+import { GestionDmodalidadesComponent } from './core/components/gestion-dmodalidades/gestion-dmodalidades.component';
 // --- 1. Importar el Guardián ---
 // (Asegúrate que la ruta a tu guardián funcional sea correcta)
 import { authGuard } from './guards/auth.guard';
@@ -80,6 +81,12 @@ const routes: Routes = [
   {
     path: 'modalidades',
     component: GestionModalidadesComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrador'] }
+    },
+  {
+    path: 'dmodalidades',
+    component: GestionDmodalidadesComponent,
     canActivate: [authGuard],
     data: { roles: ['Administrador'] }
   },

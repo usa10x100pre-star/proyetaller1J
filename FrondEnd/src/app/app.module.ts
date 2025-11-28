@@ -42,7 +42,8 @@ import { GestionItemsComponent } from './core/components/gestion-items/gestion-i
 import { ModalItemsComponent } from './core/modales/modal-items/modal-items.component';
 import { GestionModalidadesComponent } from './core/components/gestion-modalidades/gestion-modalidades.component';
 import { ModalModalidadComponent } from './core/modales/modal-modalidad/modal-modalidad.component';
-
+import { GestionDmodalidadesComponent } from './core/components/gestion-dmodalidades/gestion-dmodalidades.component';
+import { ModalDmodalidadComponent } from './core/modales/modal-dmodalidad/modal-dmodalidad.component';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
 // 🔹 Registrar el idioma español globalmente
@@ -80,6 +81,8 @@ registerLocaleData(localeEs, 'es');
     ModalItemsComponent,
     GestionModalidadesComponent,
     ModalModalidadComponent,
+    GestionDmodalidadesComponent,
+    ModalDmodalidadComponent,
   ],
   imports: [
     BrowserModule,
