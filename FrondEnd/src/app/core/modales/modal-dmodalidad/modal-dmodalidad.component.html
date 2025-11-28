@@ -25,15 +25,14 @@
         </select>
       </div>
     </div>
-
-    <div class="flex justify-center gap-6 mt-8">
-      <button
-        (click)="guardar.emit(detalle)"
-         [disabled]="!detalle.coddm || !detalle.nombre || !detalle.modalidad.codmod"
-        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white px-6 py-2.5 rounded-full font-semibold tracking-wide shadow-md hover:shadow-lg transition-transform duration-200 hover:-translate-y-[1px]"
-      >
-        {{ modoEdicion ? 'Modificar' : 'Guardar' }}
-      </button>
+        <div class="flex justify-center gap-6 mt-8">
+        <button
+          (click)="guardar.emit(detalle)"
+         [disabled]="!detalle.nombre || !detalle.modalidad.codmod || (modoEdicion && !detalle.coddm)"
+          class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white px-6 py-2.5 rounded-full font-semibold tracking-wide shadow-md hover:shadow-lg transition-transform duration-200 hover:-translate-y-[1px]"
+        >
+          {{ modoEdicion ? 'Modificar' : 'Guardar' }}
+        </button>
 
       <button
         (click)="cerrar.emit()"
@@ -43,4 +42,3 @@
       </button>
     </div>
   </div>
-</div>

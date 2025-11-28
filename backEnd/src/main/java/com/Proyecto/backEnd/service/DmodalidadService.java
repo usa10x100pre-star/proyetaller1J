@@ -58,7 +58,8 @@ public class DmodalidadService {
      */
     public DmodalidadModel crear(DmodalidadModel detalle) {
         if (detalle.getCoddm() == null || detalle.getCoddm().isBlank()) {
-            throw new RuntimeException("El código del detalle de modalidad es obligatorio.");
+        	String codigo = "DM-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            detalle.setCoddm(codigo);
         }
 
         if (dmodalidadRepo.existsById(detalle.getCoddm())) {
@@ -74,7 +75,8 @@ public class DmodalidadService {
         }
 
         ModalidadesModel modalidad = modalidadesRepo.findById(detalle.getModalidad().getCodmod())
-            .orElseThrow(() -> new RuntimeException("Modalidad no encontrada con id: " + detalle.getModalidad().getCodmod()));
+        		 .orElseThrow(() -> new RuntimeException("Modalidad no encontrada con id: " + detalle.getModalidad().getCodmod()));
+
 
         detalle.setModalidad(modalidad);
         detalle.setEstado(1);

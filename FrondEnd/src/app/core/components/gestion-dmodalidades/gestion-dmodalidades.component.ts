@@ -192,6 +192,6 @@ export class GestionDmodalidadesComponent implements OnInit {
     this.detalleSeleccionado = null;
   }
   imprimirTabla(): void {
-    imprimirTablaDesdeId('tabla-dmodalidades', 'Listado de Detalle Modalidades');
+    imprimirTablaDesdeId('tabla-dmodalidades', 'Listado de Modalidades');
   }
 }
