@@ -46,6 +46,9 @@ public class NivelesService {
      * B-13.1. Adicionar Nuevo Nivel [cite: 1131]
      */
     public NivelesModel crearNivel(NivelesModel nivel) {
+    	 if (nivelesRepo.existsByNombreIgnoreCase(nivel.getNombre())) {
+             throw new RuntimeException("Ya existe un nivel con el nombre: " + nivel.getNombre());
+         }
         nivel.setEstado(1); // Se crea como Activo por defecto
         return nivelesRepo.save(nivel);
     }
@@ -56,7 +59,10 @@ public class NivelesService {
     public NivelesModel modificarNivel(int codn, NivelesModel datos) {
         NivelesModel n = nivelesRepo.findById(codn)
             .orElseThrow(() -> new RuntimeException("Nivel no encontrado con id: " + codn));
-        
+        if (nivelesRepo.existsByNombreIgnoreCaseAndCodnNot(datos.getNombre(), codn)) {
+            throw new RuntimeException("Ya existe un nivel con el nombre: " + datos.getNombre());
+        }
+
         n.setNombre(datos.getNombre());
         return nivelesRepo.save(n);
     }
