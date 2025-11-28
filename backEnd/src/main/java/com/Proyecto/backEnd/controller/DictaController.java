@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.Proyecto.backEnd.model.DictaId;
 import com.Proyecto.backEnd.model.DictaModel;
 import com.Proyecto.backEnd.service.DictaService;
+import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/dicta")
@@ -22,6 +23,7 @@ public class DictaController {
      * B-16. Listar, filtrar y paginar
      */
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity<Page<DictaModel>> listar(
         @RequestParam(required = false, defaultValue = "") String filtro,
         @RequestParam(defaultValue = "TODOS") String estado,
@@ -37,6 +39,7 @@ public class DictaController {
      * B-16.1. Adicionar Nueva Asignación
      */
     @PostMapping
+    @Transactional
     public ResponseEntity<DictaModel> crear(
         @RequestParam String codmat,
         @RequestParam int codpar,
@@ -67,6 +70,7 @@ public class DictaController {
      * Habilitar Asignación (Botón 'H' que falta en la UI)
      */
     @PutMapping("/habilitar")
+    @Transactional
     public ResponseEntity<Void> habilitar(
         @RequestParam String codmat,
         @RequestParam int codpar,
