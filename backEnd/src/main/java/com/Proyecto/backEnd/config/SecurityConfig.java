@@ -1,6 +1,7 @@
 package com.Proyecto.backEnd.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -31,8 +32,12 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticat
         .csrf(csrf -> csrf.disable())
         .cors(cors -> {})
         .authorizeHttpRequests(authorize -> authorize
-            // 🔓 Permitir acceso libre a las rutas de autenticación y a las imágenes subidas
-            .requestMatchers("/api/auth/**", "/uploads/**").permitAll()
+        		// 🔓 Permitir acceso libre a las rutas de autenticación y a los recursos estáticos
+                .requestMatchers(
+                        "/api/auth/**",
+                        "/uploads/**"
+                ).permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             // 🔒 Todo lo demás requiere autenticación
             .anyRequest().authenticated()
         )
