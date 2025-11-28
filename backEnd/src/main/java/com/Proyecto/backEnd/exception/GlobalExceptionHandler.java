@@ -17,15 +17,17 @@ public class GlobalExceptionHandler {
 	    }
 
 	 @ExceptionHandler(DuplicateResourceException.class)
-	    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
-	        ErrorResponse errorResponse = new ErrorResponse(
-	                "Recurso duplicado",
-	                ex.getMessage(),
-	                HttpStatus.CONFLICT.value()
-	        );
+     public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
+         String reason = ex.getMessage() != null ? ex.getMessage() : "Recurso duplicado";
+         ErrorResponse errorResponse = new ErrorResponse(
+                 reason,
+                 reason,
+                 HttpStatus.CONFLICT.value()
+         );
 
-	        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-	    }
+         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+     }
+	      
 	 
 	 @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, WebRequest request) {

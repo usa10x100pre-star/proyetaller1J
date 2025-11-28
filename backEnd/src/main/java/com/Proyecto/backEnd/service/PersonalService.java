@@ -1,6 +1,7 @@
 package com.Proyecto.backEnd.service;
 
 import com.Proyecto.backEnd.exception.DuplicateResourceException;
+
 import com.Proyecto.backEnd.model.DatosModel;
 import com.Proyecto.backEnd.model.PersonalModel;
 import com.Proyecto.backEnd.repository.DatosRepo;
@@ -49,6 +50,14 @@ public class PersonalService {
         personal.setEstado(1);
         System.out.println("🧩 Guardando persona: " + personal.getNombre());
 
+     // Validar cédula duplicada antes de guardar
+        if (personal.getCedula() != null && !personal.getCedula().trim().isEmpty()) {
+            String cedula = personal.getCedula().trim();
+            if (datosRepo.existsByCedula(cedula)) {
+                throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
+            }
+        }
+        
         if (foto != null && !foto.isEmpty()) {
             String nombreFoto = guardarFoto(foto);
             personal.setFoto(nombreFoto);
@@ -59,6 +68,18 @@ public class PersonalService {
 
         PersonalModel guardado = personalRepo.save(personal);
         System.out.println("💾 Persona guardada con ID: " + guardado.getCodp());
+        // Registrar la cédula asociada si viene en la petición
+        if (personal.getCedula() != null && !personal.getCedula().trim().isEmpty()) {
+            String cedula = personal.getCedula().trim();
+            DatosModel datosPersona = new DatosModel();
+            datosPersona.setCodp(guardado.getCodp());
+            datosPersona.setCedula(cedula);
+            datosPersona.setPersonal(guardado);
+            datosRepo.save(datosPersona);
+            guardado.setCedula(cedula);
+        }
+
+        guardado.setFoto(normalizarFoto(guardado.getFoto()));
         return guardado;
     }
 
