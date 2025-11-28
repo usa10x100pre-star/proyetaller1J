@@ -1,5 +1,6 @@
 package com.Proyecto.backEnd.service;
 
+import com.Proyecto.backEnd.exception.DuplicateResourceException;
 import com.Proyecto.backEnd.model.DatosModel;
 import com.Proyecto.backEnd.model.PersonalModel;
 import com.Proyecto.backEnd.repository.DatosRepo;
@@ -22,7 +23,7 @@ public class DatosService {
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada con codp: " + codp));
 
         if (datosRepo.existsByCedula(cedula)) {
-            throw new RuntimeException("Ya existe una persona registrada con esa cédula");
+        	 throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
         }
 
         DatosModel d = new DatosModel();

@@ -1,6 +1,7 @@
 package com.Proyecto.backEnd.exception;
 
 import com.Proyecto.backEnd.dto.ErrorResponse;
+import com.Proyecto.backEnd.exception.DuplicateResourceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,17 +16,28 @@ public class GlobalExceptionHandler {
 	        System.out.println("✅ Listo para capturar excepciones");
 	    }
 
-    @ExceptionHandler(RuntimeException.class)
+	 @ExceptionHandler(DuplicateResourceException.class)
+	    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
+	        ErrorResponse errorResponse = new ErrorResponse(
+	                "Recurso duplicado",
+	                ex.getMessage(),
+	                HttpStatus.CONFLICT.value()
+	        );
+
+	        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+	    }
+	 
+	 @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, WebRequest request) {
-        System.out.println("🔴 ===== CAPTURANDO RuntimeException =====");
-        System.out.println("🔴 Mensaje: " + ex.getMessage());
-        System.out.println("🔴 Tipo: " + ex.getClass().getName());
+        System.out.println("CAPTURANDO RuntimeException =====");
+        System.out.println("Mensaje: " + ex.getMessage());
+        System.out.println("Tipo: " + ex.getClass().getName());
 
         HttpStatus status = determineHttpStatus(ex);
         String userFriendlyMessage = getUserFriendlyMessage(ex);
         
-        System.out.println("🔴 Status HTTP: " + status);
-        System.out.println("🔴 Mensaje usuario: " + userFriendlyMessage);
+        System.out.println("Status HTTP: " + status);
+        System.out.println("Mensaje usuario: " + userFriendlyMessage);
 
       
         ErrorResponse errorResponse = new ErrorResponse(
@@ -39,9 +51,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
-        System.out.println("🔴 ===== CAYENDO EN Exception GENÉRICA =====");
-        System.out.println("🔴 Tipo: " + ex.getClass().getName());
-        System.out.println("🔴 Mensaje: " + ex.getMessage());
+        System.out.println("CAYENDO EN Exception GENÉRICA =====");
+        System.out.println("Tipo: " + ex.getClass().getName());
+        System.out.println("Mensaje: " + ex.getMessage());
         ex.printStackTrace();
 
         ErrorResponse errorResponse = new ErrorResponse(
@@ -54,7 +66,7 @@ public class GlobalExceptionHandler {
 
     private HttpStatus determineHttpStatus(RuntimeException ex) {
         String message = ex.getMessage();
-        System.out.println("🔴 Analizando mensaje para status: " + message);
+        System.out.println("Analizando mensaje para status: " + message);
 
         if (message != null) {
             if (message.contains("no encontrado") ||

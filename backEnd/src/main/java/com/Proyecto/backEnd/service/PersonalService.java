@@ -1,5 +1,7 @@
 package com.Proyecto.backEnd.service;
 
+import com.Proyecto.backEnd.exception.DuplicateResourceException;
+import com.Proyecto.backEnd.model.DatosModel;
 import com.Proyecto.backEnd.model.PersonalModel;
 import com.Proyecto.backEnd.repository.DatosRepo;
 import com.Proyecto.backEnd.repository.PersonalRepo;
@@ -75,6 +77,26 @@ public class PersonalService {
         p.setEcivil(datos.getEcivil());
         p.setFnac(datos.getFnac());
 
+        if (datos.getCedula() != null && !datos.getCedula().trim().isEmpty()) {
+            String nuevaCedula = datos.getCedula().trim();
+
+            datosRepo.findByCedula(nuevaCedula)
+                    .filter(existente -> !existente.getCodp().equals(codp))
+                    .ifPresent(existente -> {
+                        throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
+                    });
+
+            DatosModel datosPersona = datosRepo.findById(codp).orElseGet(() -> {
+                DatosModel nuevoDato = new DatosModel();
+                nuevoDato.setPersonal(p);
+                return nuevoDato;
+            });
+
+            datosPersona.setCedula(nuevaCedula);
+            datosPersona.setPersonal(p);
+            datosRepo.save(datosPersona);
+        }
+        
         // Lógica para foto
         if (datos.getFoto() != null && datos.getFoto().equals("DEFAULT")) {
             // Si el frontend manda "DEFAULT", forzamos la imagen por defecto
