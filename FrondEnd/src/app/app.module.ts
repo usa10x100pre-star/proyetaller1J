@@ -40,6 +40,8 @@ import { ModalInscripcionComponent } from './core/modales/modal-inscripcion/moda
 import { GestionInscripcionComponent } from './core/components/gestion-inscripcion/gestion-inscripcion.component';
 import { GestionItemsComponent } from './core/components/gestion-items/gestion-items.component';
 import { ModalItemsComponent } from './core/modales/modal-items/modal-items.component';
+import { GestionModalidadesComponent } from './core/components/gestion-modalidades/gestion-modalidades.component';
+import { ModalModalidadComponent } from './core/modales/modal-modalidad/modal-modalidad.component';
 
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
@@ -76,6 +78,8 @@ registerLocaleData(localeEs, 'es');
     GestionInscripcionComponent,
     GestionItemsComponent,
     ModalItemsComponent,
+    GestionModalidadesComponent,
+    ModalModalidadComponent,
   ],
   imports: [
     BrowserModule,

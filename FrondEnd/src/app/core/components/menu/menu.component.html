@@ -113,6 +113,15 @@
 
     <div
       *ngIf="authService.hasRole('Administrador')"
+      routerLink="/modalidades"
+      id="gestion-modalidades-link"
+      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
+    >
+      Gestion de modalidades
+    </div>
+    
+    <div
+      *ngIf="authService.hasRole('Administrador')"
       routerLink="/niveles"
       id="gestion-niveles-link"
       class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"

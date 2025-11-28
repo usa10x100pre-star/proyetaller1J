@@ -92,6 +92,12 @@ export interface Nivel {
   nombre: string;
   estado?: number;
 }
+
+export interface Modalidad {
+  codmod?: number;
+  nombre: string;
+  estado?: number;
+}
 export interface Usuario {
   login: string;
   estado?: number;
