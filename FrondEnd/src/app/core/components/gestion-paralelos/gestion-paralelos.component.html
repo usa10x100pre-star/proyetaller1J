@@ -64,20 +64,28 @@
         </label>
       </div>
 
-      <button
-        (click)="abrirModalNuevo()"
-        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
-      >
-        <i class="fa-solid fa-plus"></i>
-        <span class="hidden md:inline">Nuevo Paralelo</span>
-      </button>
+      <div class="flex gap-3">
+        <button
+          (click)="imprimirTabla()"
+          class="bg-white border border-indigo-900 text-indigo-900 font-semibold px-3 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px] hover:bg-slate-50"
+        >
+          <i class="fa-solid fa-print"></i>
+        </button>
+        <button
+          (click)="abrirModalNuevo()"
+          class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
+        >
+          <i class="fa-solid fa-plus"></i>
+          <span class="hidden md:inline">Nuevo Paralelo</span>
+        </button>
+      </div>
     </div>
 
     <!-- Tabla -->
     <div
       class="overflow-x-auto shadow-2xl rounded-2xl ring-1 ring-indigo-900/20 bg-white/90"
     >
-      <table class="w-full bg-white divide-y divide-indigo-100">
+      <table id="tabla-paralelos" class="w-full bg-white divide-y divide-indigo-100">
         <thead class="bg-gradient-to-r from-indigo-900 to-blue-800">
           <tr>
             <th

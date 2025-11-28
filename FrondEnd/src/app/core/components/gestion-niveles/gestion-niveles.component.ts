@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NivelesService } from '../../servicios/niveles.service'; // Ajusta la ruta
 import { NotificationService } from '../../servicios/notification.service';
 import { Nivel, PageResponse } from '../../models/auth-response.model'; // Ajusta la ruta
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-niveles',
   standalone: false,
@@ -177,5 +177,8 @@ export class GestionNivelesComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.nivelSeleccionado = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-niveles', 'Listado de Niveles');
   }
 }

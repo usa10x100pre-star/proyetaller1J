@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Item } from '../../models/auth-response.model';
 import { ItemsService } from '../../servicios/items.service';
 import { NotificationService } from '../../servicios/notification.service';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-items',
   standalone: false,
@@ -157,5 +157,8 @@ export class GestionItemsComponent implements OnInit {
   cerrarModalConfirmacion() {
     this.modalConfirmVisible = false;
     this.itemSeleccionado = null;
+  }
+   imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-items', 'Listado de Ítems');
   }
 }

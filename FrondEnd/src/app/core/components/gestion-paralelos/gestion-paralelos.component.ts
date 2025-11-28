@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ParalelosService } from '../../servicios/paralelos.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { Paralelo, PageResponse } from '../../models/auth-response.model';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-paralelos',
   standalone: false,
@@ -183,5 +183,8 @@ export class GestionParalelosComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.paraleloSeleccionado = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-paralelos', 'Listado de Paralelos');
   }
 }

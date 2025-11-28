@@ -7,7 +7,7 @@ import { PersonalService } from '../../servicios/personal.service';
 import { AuthServiceService } from '../../servicios/auth.service.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { Dicta, Nivel, MapaActivo, Profesor, PageResponse } from '../../models/auth-response.model';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-asignacion-dicta',
   standalone: false,
@@ -140,15 +140,8 @@ export class GestionAsignacionDictaComponent implements OnInit {
   }
 
   guardarAsignacion(data: { codmat: string, codpar: number, codp: number }): void {
-
     if (this.modoEdicion && this.asignacionSeleccionada) {
       const idViejo = this.asignacionSeleccionada.id;
-
-      if (idViejo.codmat === data.codmat && idViejo.codpar === data.codpar && idViejo.codp === data.codp) {
-        alert("No se detectaron cambios.");
-        this.cerrarModal();
-        return;
-      }
 
       this.dictaService.modificar(
         idViejo.codmat, idViejo.codpar, idViejo.codp, idViejo.gestion,
@@ -236,5 +229,8 @@ export class GestionAsignacionDictaComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.asignacionSeleccionada = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-asignaciones-dicta', 'Listado de Asignaciones Materia-Profesor');
   }
 }

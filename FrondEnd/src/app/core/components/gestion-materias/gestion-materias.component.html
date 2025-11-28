@@ -67,21 +67,29 @@
         </label>
       </div>
 
-      <!-- Botón nuevo (B-12.3) -->
-      <button
-        (click)="abrirModalNuevo()"
-        class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
-      >
-        <i class="fa-solid fa-plus"></i>
-        <span class="hidden md:inline">Nueva Materia</span>
-      </button>
+      <!-- Botones de imprimir y nuevo (B-12.3) -->
+      <div class="flex gap-3">
+        <button
+          (click)="imprimirTabla()"
+          class="bg-white border border-indigo-900 text-indigo-900 font-semibold px-3 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px] hover:bg-slate-50"
+        >
+          <i class="fa-solid fa-print"></i>
+        </button>
+        <button
+          (click)="abrirModalNuevo()"
+          class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
+        >
+          <i class="fa-solid fa-plus"></i>
+          <span class="hidden md:inline">Nueva Materia</span>
+        </button>
+      </div>
     </div>
 
     <!-- Tabla Principal (B-12) -->
     <div
       class="overflow-x-auto shadow-2xl rounded-2xl ring-1 ring-indigo-900/20 bg-white/90"
     >
-      <table class="w-full bg-white divide-y divide-indigo-100">
+      <table id="tabla-materias" class="w-full bg-white divide-y divide-indigo-100">
         <thead class="bg-gradient-to-r from-indigo-900 to-blue-800">
           <tr>
             <th
@@ -146,7 +154,7 @@
                   (change)="abrirPanelParalelos(m)"
                   class="accent-indigo-900 w-4 h-4"
                 />
-                <span class="text-sm font-semibold text-indigo-900">Paralelos</span>
+                
               </label>
             </td>
 
@@ -160,7 +168,7 @@
                   (change)="abrirPanelItems(m)"
                   class="accent-amber-500 w-4 h-4"
                 />
-                <span class="text-sm font-semibold text-amber-700">Items</span>
+               
               </label>
             </td>
 

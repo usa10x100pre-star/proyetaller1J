@@ -7,6 +7,7 @@ import { AsignacionService } from '../../servicios/asignacion.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { ItemsService } from '../../servicios/items.service';
 import { Materia, Nivel, Paralelo, Mapa, PageResponse, Item, Itemat } from '../../models/auth-response.model'; // Ajusta la ruta
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-materias',
   standalone: false,
@@ -476,5 +477,8 @@ export class GestionMateriasComponent implements OnInit {
         this.cerrarModalConfirmacion();
       }
     });
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-materias', 'Listado de Materias');
   }
 }

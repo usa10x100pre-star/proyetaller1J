@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../servicios/notification.service';
 import { Modalidad, PageResponse } from '../../models/auth-response.model';
 import { ModalidadesService } from '../../servicios/modalidades.service';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-modalidades',
   standalone: false,
@@ -155,5 +155,8 @@ export class GestionModalidadesComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.modalidadSeleccionada = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-modalidades', 'Listado de Modalidades');
   }
 }

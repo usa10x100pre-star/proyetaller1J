@@ -16,10 +16,12 @@ export class ModalAsignacionDictaComponent {
   @Input() modoEdicion = false;
 
   @Input() set asignacionData(data: Dicta | null) {
-    if (data && this.modoEdicion) {
-      // Si estamos en modo edición, pre-seleccionamos los valores
+   if (data) {
       this.codMapaSeleccionado = data.id.codmat + '|' + data.id.codpar;
       this.codpSeleccionado = data.id.codp;
+       } else {
+      this.codMapaSeleccionado = '0';
+      this.codpSeleccionado = 0;
     }
   }
 

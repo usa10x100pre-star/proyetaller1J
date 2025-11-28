@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PersonalService, Personal } from '../../servicios/personal.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { environment } from '../../../../environments/environment';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-usuarios',
   standalone: false,
@@ -377,6 +377,9 @@ export class GestionUsuariosComponent implements OnInit {
         },
       });
     }
+  }
+  imprimirTablaUsuarios(): void {
+    imprimirTablaDesdeId('tabla-usuarios', 'Listado de Personal');
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RolesService } from '../../servicios/roles.service';
 import { NotificationService } from '../../servicios/notification.service';
 import { PageResponse, Role } from '../../models/auth-response.model';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-roles',
   templateUrl: './gestion-roles.component.html',
@@ -195,5 +195,8 @@ export class GestionRolesComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.rolSeleccionado = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-roles', 'Listado de Roles');
   }
 }

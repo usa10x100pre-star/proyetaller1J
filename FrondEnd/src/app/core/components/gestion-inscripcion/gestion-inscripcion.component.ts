@@ -7,7 +7,7 @@ import { AsignacionService } from '../../servicios/asignacion.service';
 import { PersonalService } from '../../servicios/personal.service';
 import { AuthServiceService } from '../../servicios/auth.service.service';
 import { NotificationService } from '../../servicios/notification.service';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-inscripcion',
   standalone: false,
@@ -197,4 +197,7 @@ export class GestionInscripcionComponent implements OnInit {
 
   cerrarModal() { this.modalVisible = false; }
   cerrarModalConfirmacion() { this.modalConfirmVisible = false; }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-inscripciones', 'Listado de Inscripciones');
+  }
 }

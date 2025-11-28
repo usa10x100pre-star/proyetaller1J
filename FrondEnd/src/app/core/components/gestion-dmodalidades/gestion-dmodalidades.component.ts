@@ -3,7 +3,7 @@ import { Dmodalidad, Modalidad, PageResponse } from '../../models/auth-response.
 import { DmodalidadService } from '../../servicios/dmodalidad.service';
 import { ModalidadesService } from '../../servicios/modalidades.service';
 import { NotificationService } from '../../servicios/notification.service';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-dmodalidades',
   standalone: false,
@@ -190,5 +190,8 @@ export class GestionDmodalidadesComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.detalleSeleccionado = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-dmodalidades', 'Listado de Detalle Modalidades');
   }
 }

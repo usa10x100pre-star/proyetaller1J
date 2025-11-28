@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenusService } from '../../servicios/menus.service'; // Ajusta la ruta si es necesario
 import { NotificationService } from '../../servicios/notification.service';
 import { Menu, PageResponse } from '../../models/auth-response.model';
-
+import { imprimirTablaDesdeId } from '../../utils/print-utils';
 @Component({
   selector: 'app-gestion-menus',
   templateUrl: './gestion-menus.component.html',
@@ -180,5 +180,8 @@ export class GestionMenusComponent implements OnInit {
   cerrarModalConfirmacion(): void {
     this.modalConfirmVisible = false;
     this.menuSeleccionado = null;
+  }
+  imprimirTabla(): void {
+    imprimirTablaDesdeId('tabla-menus', 'Listado de Menús');
   }
 }
