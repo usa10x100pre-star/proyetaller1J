@@ -57,12 +57,8 @@ public class PrograController {
         @RequestParam int newCodp,
         @RequestParam String login
     ) {
-        try {
-            PrograModel act = prograService.modificarInscripcion(oldCodmat, oldCodpar, oldCodp, oldGestion, newCodmat, newCodpar, newCodp, login);
-            return ResponseEntity.ok(act);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    	PrograModel act = prograService.modificarInscripcion(oldCodmat, oldCodpar, oldCodp, oldGestion, newCodmat, newCodpar, newCodp, login);
+        return ResponseEntity.ok(act);
     }
 
     @DeleteMapping
