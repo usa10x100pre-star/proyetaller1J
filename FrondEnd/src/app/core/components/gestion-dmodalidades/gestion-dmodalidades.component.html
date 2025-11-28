@@ -2,7 +2,7 @@
   <div class="max-w-6xl mx-auto">
     <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-950 mb-8 border-b-4 border-amber-400 pb-2 tracking-tight flex items-center gap-3">
       <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-700 to-amber-400 text-white text-xl shadow-md">DM</span>
-      <span>Gestión Detalle de Modalidades</span>
+      <span>Gestión tipo Modalidad</span>
     </h2>
 
     <div class="flex flex-col lg:flex-row items-center gap-4 mb-8 flex-wrap bg-white/70 rounded-2xl px-4 py-4 shadow-sm border border-indigo-900/10">
@@ -20,7 +20,7 @@
         <select
           class="px-4 py-2 border border-indigo-800/30 rounded-xl shadow-sm bg-white/90 focus:ring-2 focus:ring-amber-400 focus:outline-none"
           [(ngModel)]="filtroModalidad"
-          (change)="onModalidadChange($event.target.value)"
+          (ngModelChange)="onModalidadChange($event)"
         >
           <option [ngValue]="null">Todas las modalidades</option>
           <option *ngFor="let mod of modalidades" [ngValue]="mod.codmod">{{ mod.nombre }}</option>
@@ -47,7 +47,7 @@
         class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-amber-400 hover:from-indigo-900 hover:via-indigo-800 hover:to-amber-300 text-white font-semibold px-4 py-2 rounded-full shadow-md flex items-center gap-2 transition-transform duration-200 hover:-translate-y-[1px]"
       >
         <i class="fa-solid fa-plus"></i>
-        <span class="hidden md:inline">Nuevo Detalle</span>
+        <span class="hidden md:inline">Nueva Tipo Modalidad</span>
       </button>
     </div>
 
@@ -55,18 +55,14 @@
       <table class="w-full bg-white divide-y divide-indigo-100">
         <thead class="bg-gradient-to-r from-indigo-900 to-blue-800">
           <tr>
-            <th class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm">Código</th>
-            <th class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm">Nombre Detalle</th>
-            <th class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm">Modalidad</th>
+            <th class="px-6 py-3 text-left text-white font-bold uppercase tracking-wide text-sm">Nombre Tipo Modalidad</th>
             <th class="px-6 py-3 text-center text-white font-bold uppercase tracking-wide text-sm">Estado</th>
             <th class="px-6 py-3 text-center text-white font-bold uppercase tracking-wide text-sm">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-indigo-100">
           <tr *ngFor="let dm of dmodalidades" class="odd:bg-sky-50 even:bg-white hover:bg-amber-50/80 transition-colors">
-            <td class="px-6 py-3 text-slate-900 font-semibold">{{ dm.coddm }}</td>
-            <td class="px-6 py-3 text-slate-900">{{ dm.nombre }}</td>
-            <td class="px-6 py-3 text-slate-900">{{ dm.modalidad?.nombre }}</td>
+            <td class="px-6 py-3 text-slate-900 font-semibold">{{ dm.nombre }}</td>
             <td class="px-6 py-3 text-center">
               <i *ngIf="dm.estado === 1" class="fa-solid fa-thumbs-up text-emerald-600 fa-lg" title="Activo"></i>
               <i *ngIf="dm.estado === 0" class="fa-solid fa-thumbs-down text-red-600 fa-lg" title="Inactivo"></i>

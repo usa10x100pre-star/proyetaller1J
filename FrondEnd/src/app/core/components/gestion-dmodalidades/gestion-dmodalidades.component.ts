@@ -85,8 +85,8 @@ export class GestionDmodalidadesComponent implements OnInit {
     this.cargarDmodalidades();
   }
 
-  onModalidadChange(codmod: string): void {
-    this.filtroModalidad = codmod ? Number(codmod) : null;
+   onModalidadChange(codmod: number | null): void {
+    this.filtroModalidad = codmod ?? null;
     this.paginaActual = 1;
     this.cargarDmodalidades();
   }
