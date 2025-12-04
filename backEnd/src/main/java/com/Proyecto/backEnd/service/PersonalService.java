@@ -50,13 +50,7 @@ public class PersonalService {
         personal.setEstado(1);
         System.out.println("🧩 Guardando persona: " + personal.getNombre());
 
-     // Validar cédula duplicada antes de guardar
-        if (personal.getCedula() != null && !personal.getCedula().trim().isEmpty()) {
-            String cedula = personal.getCedula().trim();
-            if (datosRepo.existsByCedula(cedula)) {
-                throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
-            }
-        }
+        String cedulaNormalizada = validarCedulaObligatoriaYUnica(personal.getCedula(), null);
         
         if (foto != null && !foto.isEmpty()) {
             String nombreFoto = guardarFoto(foto);
@@ -69,15 +63,12 @@ public class PersonalService {
         PersonalModel guardado = personalRepo.save(personal);
         System.out.println("💾 Persona guardada con ID: " + guardado.getCodp());
         // Registrar la cédula asociada si viene en la petición
-        if (personal.getCedula() != null && !personal.getCedula().trim().isEmpty()) {
-            String cedula = personal.getCedula().trim();
-            DatosModel datosPersona = new DatosModel();
-            datosPersona.setCodp(guardado.getCodp());
-            datosPersona.setCedula(cedula);
-            datosPersona.setPersonal(guardado);
-            datosRepo.save(datosPersona);
-            guardado.setCedula(cedula);
-        }
+        DatosModel datosPersona = new DatosModel();
+        datosPersona.setCodp(guardado.getCodp());
+        datosPersona.setCedula(cedulaNormalizada);
+        datosPersona.setPersonal(guardado);
+        datosRepo.save(datosPersona);
+        guardado.setCedula(cedulaNormalizada);
 
         guardado.setFoto(normalizarFoto(guardado.getFoto()));
         return guardado;
@@ -98,25 +89,19 @@ public class PersonalService {
         p.setEcivil(datos.getEcivil());
         p.setFnac(datos.getFnac());
 
-        if (datos.getCedula() != null && !datos.getCedula().trim().isEmpty()) {
-            String nuevaCedula = datos.getCedula().trim();
+        String nuevaCedula = validarCedulaObligatoriaYUnica(datos.getCedula(), codp);
 
-            datosRepo.findByCedula(nuevaCedula)
-                    .filter(existente -> !existente.getCodp().equals(codp))
-                    .ifPresent(existente -> {
-                        throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
-                    });
+        DatosModel datosPersona = datosRepo.findById(codp).orElseGet(() -> {
+            DatosModel nuevoDato = new DatosModel();
+            nuevoDato.setCodp(codp);
+            nuevoDato.setPersonal(p);
+            return nuevoDato;
+        });
 
-            DatosModel datosPersona = datosRepo.findById(codp).orElseGet(() -> {
-                DatosModel nuevoDato = new DatosModel();
-                nuevoDato.setPersonal(p);
-                return nuevoDato;
-            });
-
-            datosPersona.setCedula(nuevaCedula);
-            datosPersona.setPersonal(p);
-            datosRepo.save(datosPersona);
-        }
+        datosPersona.setCodp(codp);
+        datosPersona.setCedula(nuevaCedula);
+        datosPersona.setPersonal(p);
+        datosRepo.save(datosPersona);
         
         // Lógica para foto
         if (datos.getFoto() != null && datos.getFoto().equals("DEFAULT")) {
@@ -206,6 +191,21 @@ public class PersonalService {
             return "default-user.png";
         }
         return foto;
+    }
+    private String validarCedulaObligatoriaYUnica(String cedula, Integer codpActual) {
+        if (cedula == null || cedula.trim().isEmpty()) {
+            throw new IllegalArgumentException("La cédula es obligatoria");
+        }
+
+        String cedulaNormalizada = cedula.trim();
+
+        datosRepo.findByCedula(cedulaNormalizada)
+                .filter(existente -> codpActual == null || !existente.getCodp().equals(codpActual))
+                .ifPresent(existente -> {
+                    throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
+                });
+
+        return cedulaNormalizada;
     }
     public List<PersonalModel> listarEstudiantesActivos() {
         Specification<PersonalModel> spec = (root, query, cb) -> {

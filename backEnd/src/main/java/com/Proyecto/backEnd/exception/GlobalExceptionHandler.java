@@ -79,6 +79,8 @@ public class GlobalExceptionHandler {
                        message.contains("duplicado") ||
                        message.contains("duplicada")) {
                 return HttpStatus.CONFLICT;
+            } else if (message.contains("obligatoria") || message.contains("obligatorio")) {
+                return HttpStatus.BAD_REQUEST;
             }
         }
         return HttpStatus.BAD_REQUEST;
@@ -90,6 +92,8 @@ public class GlobalExceptionHandler {
                 return "Recurso no encontrado";
             } else if (message.contains("Ya existe")) {
                 return "Recurso duplicado";
+            } else if (message.contains("obligatoria") || message.contains("obligatorio")) {
+                return message;
             } else if (message.contains("Menú o Proceso no encontrado")) {
                 return "Menú o proceso no encontrado";
             }

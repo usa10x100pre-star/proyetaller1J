@@ -21,13 +21,19 @@ public class DatosService {
     public DatosModel registrarDato(String cedula, int codp) {
         PersonalModel persona = personalRepo.findById(codp)
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada con codp: " + codp));
+        String cedulaNormalizada = cedula == null ? null : cedula.trim();
 
-        if (datosRepo.existsByCedula(cedula)) {
-        	 throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
+        if (cedulaNormalizada == null || cedulaNormalizada.isEmpty()) {
+            throw new IllegalArgumentException("La cédula es obligatoria");
+        }
+
+        if (datosRepo.existsByCedula(cedulaNormalizada)) {
+            throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula");
         }
 
         DatosModel d = new DatosModel();
-        d.setCedula(cedula);
+        d.setCodp(codp);
+        d.setCedula(cedulaNormalizada);
         d.setPersonal(persona);
         return datosRepo.save(d);
     }

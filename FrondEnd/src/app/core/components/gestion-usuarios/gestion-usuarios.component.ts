@@ -70,7 +70,13 @@ export class GestionUsuariosComponent implements OnInit {
    * Muestra un error amigable usando el mensaje del backend si está disponible.
    */
   private manejarError(err: any, mensajePorDefecto: string): void {
-    const mensaje = err?.error?.mensaje || err?.message || mensajePorDefecto;
+    const mensajeBackend =
+      err?.error?.message ||
+      err?.error?.mensaje ||
+      err?.error?.details ||
+      err?.error?.detalle;
+
+    const mensaje = mensajeBackend || err?.message || mensajePorDefecto;
     this.notificationService.showError(mensaje);
   }
 
@@ -116,6 +122,12 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
   guardarPersona(): void {
+     const mensajeError = this.validarCedulaObligatoria(this.nuevaPersona);
+    if (mensajeError) {
+      this.notificationService.showError(mensajeError);
+      return;
+    }
+
     // primero guarda la persona en PERSONAL
     this.personalService.crear(this.nuevaPersona, this.nuevaFoto!).subscribe({
       next: (personaGuardada) => {
@@ -155,6 +167,11 @@ export class GestionUsuariosComponent implements OnInit {
   }
 
   modificarPersona(): void {
+     const mensajeError = this.validarCedulaObligatoria(this.nuevaPersona);
+    if (mensajeError) {
+      this.notificationService.showError(mensajeError);
+      return;
+    }
     if (!this.nuevaPersona.codp) return;
     this.personalService
       .modificar(this.nuevaPersona.codp, this.nuevaPersona, this.nuevaFoto!)
@@ -307,6 +324,7 @@ export class GestionUsuariosComponent implements OnInit {
 
   private resetPersona(): Personal {
     return {
+       cedula: '',
       nombre: '',
       ap: '',
       am: '',
@@ -315,6 +333,16 @@ export class GestionUsuariosComponent implements OnInit {
       ecivil: '',
       estado: 1,
     };
+  }
+  private validarCedulaObligatoria(persona: Personal): string | null {
+    const cedulaNormalizada = persona.cedula?.trim() || '';
+
+    if (!cedulaNormalizada) {
+      return 'La cédula es obligatoria';
+    }
+
+    persona.cedula = cedulaNormalizada;
+    return null;
   }
   // Modal de acceso
   modalAccesoVisible = false;
