@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -46,6 +48,7 @@ public class PersonalService {
         return lista;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public PersonalModel crear(PersonalModel personal, MultipartFile foto) throws IOException {
         personal.setEstado(1);
         System.out.println("🧩 Guardando persona: " + personal.getNombre());
@@ -67,7 +70,12 @@ public class PersonalService {
         datosPersona.setCodp(guardado.getCodp());
         datosPersona.setCedula(cedulaNormalizada);
         datosPersona.setPersonal(guardado);
-        datosRepo.save(datosPersona);
+        
+        try {
+            datosRepo.save(datosPersona);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula", ex);
+        }
         guardado.setCedula(cedulaNormalizada);
 
         guardado.setFoto(normalizarFoto(guardado.getFoto()));
@@ -75,6 +83,7 @@ public class PersonalService {
     }
 
     // Modificar
+    @Transactional(rollbackFor = Exception.class)
     public PersonalModel modificar(int codp, PersonalModel datos, MultipartFile nuevaFoto) throws IOException {
         PersonalModel p = personalRepo.findById(codp)
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
@@ -101,7 +110,12 @@ public class PersonalService {
         datosPersona.setCodp(codp);
         datosPersona.setCedula(nuevaCedula);
         datosPersona.setPersonal(p);
-        datosRepo.save(datosPersona);
+        
+        try {
+            datosRepo.save(datosPersona);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula", ex);
+        }
         
         // Lógica para foto
         if (datos.getFoto() != null && datos.getFoto().equals("DEFAULT")) {

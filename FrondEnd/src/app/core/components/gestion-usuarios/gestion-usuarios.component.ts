@@ -128,27 +128,12 @@ export class GestionUsuariosComponent implements OnInit {
       return;
     }
 
-    // primero guarda la persona en PERSONAL
+    // primero guarda la persona en PERSONAL (el backend registra la cédula en DATOS)
     this.personalService.crear(this.nuevaPersona, this.nuevaFoto!).subscribe({
-      next: (personaGuardada) => {
-
-        if (this.nuevaPersona.cedula && this.nuevaPersona.cedula.trim() !== '') {
-          this.personalService.registrarEnDatos(personaGuardada.codp!, this.nuevaPersona.cedula).subscribe({
-            next: () => {
-              this.notificationService.showSuccess('Persona creada correctamente');
-              this.cargarUsuarios();
-              this.modalPersonaVisible = false;
-            },
-            error: (err) => {
-              console.error('Error al guardar en DATOS:', err);
-              this.manejarError(err, 'Error al guardar datos complementarios');
-            },
-          });
-        } else {
-          this.notificationService.showSuccess('Persona creada correctamente');
-          this.cargarUsuarios();
-          this.modalPersonaVisible = false;
-        }
+       next: () => {
+        this.notificationService.showSuccess('Persona creada correctamente');
+        this.cargarUsuarios();
+        this.modalPersonaVisible = false;
       },
       error: (err) => {
         console.error('Error al guardar persona:', err);

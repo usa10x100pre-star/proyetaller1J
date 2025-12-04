@@ -7,6 +7,7 @@ import com.Proyecto.backEnd.repository.DatosRepo;
 import com.Proyecto.backEnd.repository.PersonalRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +36,10 @@ public class DatosService {
         d.setCodp(codp);
         d.setCedula(cedulaNormalizada);
         d.setPersonal(persona);
-        return datosRepo.save(d);
+        try {
+            return datosRepo.save(d);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula", ex);
+        }
     }
 }

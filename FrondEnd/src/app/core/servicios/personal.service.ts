@@ -72,12 +72,6 @@ export class PersonalService {
   habilitar(codp: number): Observable<void> {
     return this.http.put<void>(`${this.apiURL}/${codp}/habilitar`, {}, { headers: this.getAuthHeaders() });
   }
-  registrarEnDatos(codp: number, cedula: string): Observable<any> {
-  const params = new URLSearchParams({ codp: codp.toString(), cedula });
-  return this.http.post(`${environment.apiURL}/api/datos?${params.toString()}`, {}, {
-    headers: this.getAuthHeaders(),
-  });
-}
 crearUsuario(usuario: any): Observable<any> {
   return this.http.post(`${environment.apiURL}/api/usuarios`, usuario, {
     headers: this.getAuthHeaders(),
