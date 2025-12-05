@@ -2,21 +2,27 @@ package com.Proyecto.backEnd.exception;
 
 import com.Proyecto.backEnd.dto.ErrorResponse;
 import com.Proyecto.backEnd.exception.DuplicateResourceException;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
-	 public GlobalExceptionHandler() {
-	        System.out.println("✅ ===== GlobalExceptionHandler INICIALIZADO =====");
-	        System.out.println("✅ Listo para capturar excepciones");
-	    }
+	  public GlobalExceptionHandler() {
+          System.out.println("✅ ===== GlobalExceptionHandler INICIALIZADO =====");
+          System.out.println("✅ Listo para capturar excepciones");
+      }
 
-	 @ExceptionHandler(DuplicateResourceException.class)
+	  @ExceptionHandler(DuplicateResourceException.class)
      public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
          String reason = ex.getMessage() != null ? ex.getMessage() : "Recurso duplicado";
          ErrorResponse errorResponse = new ErrorResponse(
@@ -27,6 +33,20 @@ public class GlobalExceptionHandler {
 
          return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
      }
+	  
+	  // excepcion
+	    @ExceptionHandler(BadCredentialsException.class)
+	    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+
+	        Map<String, Object> body = new HashMap<>();
+	        body.put("mensaje", "Usuario o contraseña incorrectoss");
+	        body.put("timestamp", LocalDateTime.now());
+
+	        return ResponseEntity
+	                .status(HttpStatus.UNAUTHORIZED)
+	                .body(body);
+	    }
+
 	      
 	 
 	 @ExceptionHandler(RuntimeException.class)

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/dicta")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.18:8100"})
 public class DictaController {
 
     @Autowired
