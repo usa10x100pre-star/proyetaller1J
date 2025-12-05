@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthServiceService } from '../../servicios/auth.service.service'; // 👈 Ajusta la ruta si es necesario
 import { AuthResponse } from '../../models/auth-response.model'; // 👈 Ajusta la ruta
-
+import { NotificationService } from '../../servicios/notification.service';
 @Component({
   selector: 'app-menu', // (Asegúrate que este selector sea correcto)
   templateUrl: './menu.component.html',
@@ -26,7 +26,8 @@ export class MenuComponent implements OnInit {
   // Hacemos el servicio 'public' para que el HTML pueda usarlo
   constructor(
     public authService: AuthServiceService, // 👈 Inyectado como 'public'
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +66,7 @@ export class MenuComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error en el login:', err);
-        alert('Usuario o contraseña incorrectos');
+       this.notificationService.showError('Usuario o contraseña incorrectos');
       }
     });
   }

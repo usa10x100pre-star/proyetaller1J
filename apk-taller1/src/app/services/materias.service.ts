@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class MateriasService {
 
-  private apiUrl = 'http://192.168.0.18:9090/api/materias';
+  private apiUrl = 'http://192.168.0.16:9090/api/materias';
 
   constructor(private http: HttpClient) {}
 

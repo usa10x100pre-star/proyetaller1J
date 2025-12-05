@@ -37,9 +37,9 @@ export class ErrorInterceptor implements HttpInterceptor {
       return 'No se pudo conectar con el servidor. Verifique su conexión.';
     }
 
-    // 2) Sesión expirada/no autorizada
+    // 2) Sesión no autorizada
     if (error.status === 401) {
-      return 'Sesión no válida o expirada. Inicie sesión nuevamente.';
+      return 'Usuario o contraseña incorrectos.';
     }
 
     // 3) Respuestas en texto plano

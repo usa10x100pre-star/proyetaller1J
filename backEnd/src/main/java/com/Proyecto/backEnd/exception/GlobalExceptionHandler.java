@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 	    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
 
 	        Map<String, Object> body = new HashMap<>();
-	        body.put("mensaje", "Usuario o contraseña incorrectoss");
+	        body.put("mensaje", "Usuario o contraseña incorrectos");
 	        body.put("timestamp", LocalDateTime.now());
 
 	        return ResponseEntity
