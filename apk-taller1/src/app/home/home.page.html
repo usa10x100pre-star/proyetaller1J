@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Ingreso al Sistema</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card>
+    <ion-card-content>
+
+      <ion-item>
+        <ion-label position="stacked">Login</ion-label>
+        <ion-input [(ngModel)]="username" placeholder="Ingrese su login"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input [(ngModel)]="password" type="password" placeholder="Ingrese su contraseña"></ion-input>
+      </ion-item>
+
+      <div class="ion-text-center ion-margin-top">
+        <ion-button expand="block" (click)="onLogin()">Ingresar</ion-button>
+      </div>
+
+      <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

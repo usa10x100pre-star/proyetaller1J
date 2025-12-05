@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Lista de Materias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- 🔄 AGREGADO SIN CAMBIAR NADA -->
+  <ion-refresher slot="fixed" (ionRefresh)="refrescarMaterias($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- 🔄 FIN DEL AGREGADO -->
+
+  <ion-card>
+    <ion-card-content>
+
+      <ion-list *ngIf="materias.length > 0; else noDatos">
+        <ion-item *ngFor="let m of materias; let i = index">
+          <ion-label>&gt; {{ i + 1 }} - {{ m.nombre }}</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ng-template #noDatos>
+        <p class="ion-text-center">NO HAY DATOS PARA MOSTRAR</p>
+      </ng-template>
+
+      <div class="ion-text-right ion-margin-top">
+        <ion-button fill="solid" color="danger" (click)="cerrarSesion()">
+          Cerrar Sesión
+        </ion-button>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
