@@ -18,7 +18,6 @@ export class GestionInscripcionComponent implements OnInit {
 
   inscripciones: Progra[] = [];
   filtro = '';
-  filtroEstado = 'ACTIVOS';
   filtroNivel = 0;
 
   listaNivelesActivos: Nivel[] = [];
@@ -33,11 +32,7 @@ export class GestionInscripcionComponent implements OnInit {
   totalPaginas = 0;
 
   modalVisible = false;
-  modalConfirmVisible = false;
-  modoEdicion = false;
-  mensajeConfirmacion = '';
   inscripcionSeleccionada: Progra | null = null;
-  tipoConfirmacion: 'eliminar' | 'habilitar' = 'eliminar';
 
   constructor(
     private prograService: PrograService,
@@ -80,7 +75,7 @@ export class GestionInscripcionComponent implements OnInit {
 
   cargarInscripciones(): void {
     this.prograService
-      .listarPaginado(this.filtro, this.filtroEstado, this.filtroNivel, this.paginaActual, this.itemsPorPagina)
+       .listarPaginado(this.filtro, 'TODOS', this.filtroNivel, this.paginaActual, this.itemsPorPagina)
       .subscribe({
         next: response => {
           this.inscripciones = response.content;
@@ -97,11 +92,6 @@ export class GestionInscripcionComponent implements OnInit {
     this.cargarInscripciones();
   }
 
-  onEstadoChange() {
-    this.paginaActual = 1;
-    this.cargarInscripciones();
-  }
-
   cambiarPagina(page: number) {
     if (page >= 1 && page <= this.totalPaginas) {
       this.paginaActual = page;
@@ -111,43 +101,22 @@ export class GestionInscripcionComponent implements OnInit {
 
   // Modales
   abrirModalNuevo() {
-    this.modoEdicion = false;
     this.inscripcionSeleccionada = null;
     this.modalVisible = true;
   }
 
-  abrirModalEditar(item: Progra) {
-    this.modoEdicion = true;
-    this.inscripcionSeleccionada = item;
-    this.modalVisible = true;
-  }
-
   guardarInscripcion(data: { codmat: string, codpar: number, codp: number }) {
-    const obs = this.modoEdicion && this.inscripcionSeleccionada
-      ? this.prograService.modificar(
-          this.inscripcionSeleccionada.id,
-          data.codmat,
-          data.codpar,
-          data.codp,
-          this.loginUsuarioActual
-        )
-      : this.prograService.crear(
-          data.codmat,
-          data.codpar,
-          data.codp,
-          this.gestionActual,
-          this.loginUsuarioActual
-        );
-
-    obs.subscribe({
+     this.prograService.crear(
+      data.codmat,
+      data.codpar,
+      data.codp,
+      this.gestionActual,
+      this.loginUsuarioActual
+    ).subscribe({
       next: () => {
         this.cargarInscripciones();
         this.cerrarModal();
-        this.notificationService.showSuccess(
-          this.modoEdicion
-            ? 'Inscripción modificada correctamente'
-            : 'Inscripción creada correctamente'
-        );
+        this.notificationService.showSuccess('Inscripción creada correctamente');
       },
       error: (err) => {
         console.error('Error al guardar la inscripción:', err);
@@ -155,48 +124,7 @@ export class GestionInscripcionComponent implements OnInit {
       }
     });
   }
-
-  confirmarEliminar(item: Progra) {
-    this.tipoConfirmacion = 'eliminar';
-    this.inscripcionSeleccionada = item;
-    this.mensajeConfirmacion = '¿Eliminar Inscripción?';
-    this.modalConfirmVisible = true;
-  }
-
-  confirmarHabilitar(item: Progra) {
-    this.tipoConfirmacion = 'habilitar';
-    this.inscripcionSeleccionada = item;
-    this.mensajeConfirmacion = '¿Habilitar Inscripción?';
-    this.modalConfirmVisible = true;
-  }
-
-  ejecutarConfirmacion() {
-    if (!this.inscripcionSeleccionada) return;
-    const id = this.inscripcionSeleccionada.id;
-
-    const obs = this.tipoConfirmacion === 'eliminar'
-      ? this.prograService.eliminar(id)
-      : this.prograService.habilitar(id);
-
-    obs.subscribe({
-      next: () => {
-        this.cargarInscripciones();
-        this.cerrarModalConfirmacion();
-        this.notificationService.showSuccess(
-          this.tipoConfirmacion === 'eliminar'
-            ? 'Inscripción eliminada correctamente'
-            : 'Inscripción habilitada correctamente'
-        );
-      },
-      error: (err) => {
-        console.error('Error al procesar la solicitud de inscripción:', err);
-        // ❌ Nada de showError aquí, interceptor + GlobalExceptionHandler se encargan
-      }
-    });
-  }
-
   cerrarModal() { this.modalVisible = false; }
-  cerrarModalConfirmacion() { this.modalConfirmVisible = false; }
   imprimirTabla(): void {
     imprimirTablaDesdeId('tabla-inscripciones', 'Listado de Inscripciones');
   }
