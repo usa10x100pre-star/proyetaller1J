@@ -127,12 +127,17 @@ export class MenuComponent implements OnInit {
         enlace: this.normalizarEnlace(proceso.enlace),
       }))
       .filter((proceso) => {
+         // Descarta procesos sin enlace utilizable o repetidos
+        if (!proceso.enlace) {
+          return false;
+        }
+
         const id = proceso.codp;
         if (vistos.has(id)) {
           return false;
         }
         vistos.add(id);
-        return (proceso.estado ?? 1) === 1 && !!proceso.enlace;
+          return (proceso.estado ?? 1) === 1;
       });
   }
 
@@ -143,7 +148,11 @@ export class MenuComponent implements OnInit {
    * que provoquen páginas vacías al navegar.
    */
   private normalizarEnlace(enlace?: string): string | undefined {
-    if (!enlace) return undefined;
-    return enlace.startsWith('/') ? enlace : `/${enlace}`;
+    const limpio = (enlace ?? '').trim();
+    if (!limpio) return undefined;
+
+    const conSlash = limpio.startsWith('/') ? limpio : `/${limpio}`;
+    // Evita rutas con espacios o // duplicados que puedan romper el router
+    return conSlash.replace(/\s+/g, '').replace(/\/+/g, '/');
 }
 }

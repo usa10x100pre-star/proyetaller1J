@@ -127,14 +127,17 @@ export class AuthServiceService {
    * @param roleName El nombre del rol a verificar (Ej: "Administrador")
    */
   hasRole(roleName: string): boolean {
-      const activeRole = this.getActiveRole();
+      const normalizedTarget = this.normalizeRoleName(roleName);
+    const activeRole = this.normalizeRoleName(this.getActiveRole());
+
 
     if (activeRole) {
-      return activeRole === roleName;
+     return activeRole === normalizedTarget;
     }
+
     const roles = this.getRoles();
     // Busca si alguno de los roles del usuario coincide con el nombre
-    return roles.some(rol => rol.nombre === roleName);
+     return roles.some(rol => this.normalizeRoleName(rol.nombre) === normalizedTarget);
   }
 
   /**
@@ -142,15 +145,23 @@ export class AuthServiceService {
    * @param requiredRoles Un array de nombres de rol (Ej: ['Administrador', 'Profesor'])
    */
   hasAnyRole(requiredRoles: string[]): boolean {
-     const activeRole = this.getActiveRole();
+     const normalizedRequired = requiredRoles.map((role) => this.normalizeRoleName(role));
+    const activeRole = this.normalizeRoleName(this.getActiveRole());
 
     if (activeRole) {
-      return requiredRoles.includes(activeRole);
+      return normalizedRequired.includes(activeRole);
     }
 
-    const userRoles = this.getRoles().map(r => r.nombre);
+   const userRoles = this.getRoles().map((r) => this.normalizeRoleName(r.nombre));
     // Devuelve true si el usuario tiene al menos uno de los roles requeridos
-    return requiredRoles.some(role => userRoles.includes(role));
+    return normalizedRequired.some((role) => userRoles.includes(role));
+     }
+
+  /**
+   * Normaliza el nombre del rol para comparaciones sin sensibilidad a mayúsculas y espacios.
+   */
+  private normalizeRoleName(roleName: string | null | undefined): string {
+    return (roleName ?? '').trim().toLowerCase();
   }
   // --- 👆 FIN DE LAS CORRECCIONES ---
 }
