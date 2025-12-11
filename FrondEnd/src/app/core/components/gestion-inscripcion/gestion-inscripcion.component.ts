@@ -32,7 +32,9 @@ export class GestionInscripcionComponent implements OnInit {
   totalPaginas = 0;
 
   modalVisible = false;
+  modoEdicion = false;
   inscripcionSeleccionada: Progra | null = null;
+
 
   constructor(
     private prograService: PrograService,
@@ -75,7 +77,7 @@ export class GestionInscripcionComponent implements OnInit {
 
   cargarInscripciones(): void {
     this.prograService
-       .listarPaginado(this.filtro, 'TODOS', this.filtroNivel, this.paginaActual, this.itemsPorPagina)
+      .listarPaginado(this.filtro, 'TODOS', this.filtroNivel, this.paginaActual, this.itemsPorPagina)
       .subscribe({
         next: response => {
           this.inscripciones = response.content;
