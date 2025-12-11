@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthServiceService } from '../../servicios/auth.service.service'; // 👈 Ajusta la ruta si es necesario
-import { AuthResponse } from '../../models/auth-response.model'; // 👈 Ajusta la ruta
+import { AuthResponse, Menu, Proceso, Role } from '../../models/auth-response.model'; // 👈 Ajusta la ruta
 import { NotificationService } from '../../servicios/notification.service';
 @Component({
   selector: 'app-menu', // (Asegúrate que este selector sea correcto)
@@ -21,7 +21,9 @@ export class MenuComponent implements OnInit {
   // Tu HTML depende de una variable 'login'.
   // La mantenemos y la sincronizamos con el servicio.
   login: AuthResponse | null = null;
-  selectedRole: any = null; // Para el dropdown de roles
+   selectedRole: Role | null = null; // Para el dropdown de roles
+  procesosDisponibles: Proceso[] = [];
+
 
   // Hacemos el servicio 'public' para que el HTML pueda usarlo
   constructor(
@@ -46,9 +48,11 @@ export class MenuComponent implements OnInit {
       const activeRole = this.login?.roles.find((r) => r.nombre === activeRoleName);
       this.selectedRole = activeRole ?? this.login?.roles[0] ?? null;
       this.authService.setActiveRole(this.selectedRole?.nombre ?? null);
+       this.actualizarProcesosDisponibles(this.selectedRole);
     } else {
       this.login = null;
       this.selectedRole = null;
+        this.procesosDisponibles = [];
     }
   }
 
@@ -94,11 +98,52 @@ export class MenuComponent implements OnInit {
   }
 
   // --- Lógica del Dropdown de Roles (opcional) ---
-  selectRole(rol: any): void {
+   selectRole(rol: Role | null): void {
     // Esta función se llama si el usuario cambia de rol en el dropdown.
     // Aquí podrías añadir lógica para refrescar permisos si fuera necesario.
+     if (!rol) {
+      this.selectedRole = null;
+      this.authService.setActiveRole(null);
+      this.actualizarProcesosDisponibles(null);
+      return;
+    }
     console.log("Rol cambiado a:", rol.nombre);
     this.selectedRole = rol;
-     this.authService.setActiveRole(rol?.nombre ?? null);
+    this.authService.setActiveRole(rol?.nombre ?? null);
+    this.actualizarProcesosDisponibles(rol);
   }
+
+  actualizarProcesosDisponibles(rol: Role | null): void {
+    if (!rol?.menus) {
+      this.procesosDisponibles = [];
+      return;
+    }
+
+    const vistos = new Set<number | undefined>();
+    this.procesosDisponibles = rol.menus
+      .flatMap((menu: Menu) => menu.procesos ?? [])
+      .map((proceso) => ({
+        ...proceso,
+        enlace: this.normalizarEnlace(proceso.enlace),
+      }))
+      .filter((proceso) => {
+        const id = proceso.codp;
+        if (vistos.has(id)) {
+          return false;
+        }
+        vistos.add(id);
+        return (proceso.estado ?? 1) === 1 && !!proceso.enlace;
+      });
+  }
+
+  compararRoles = (a: Role | null, b: Role | null): boolean => a?.codr === b?.codr;
+
+  /**
+   * Normaliza las rutas recibidas desde el backend para evitar rutas relativas
+   * que provoquen páginas vacías al navegar.
+   */
+  private normalizarEnlace(enlace?: string): string | undefined {
+    if (!enlace) return undefined;
+    return enlace.startsWith('/') ? enlace : `/${enlace}`;
+}
 }

@@ -2,6 +2,8 @@
 export interface Proceso {
   codp?: number;
   nombre: string;
+   enlace?: string;
+  ayuda?: string;
   estado?: number;
   asignado: boolean; // Flag para el checkbox
 }
@@ -32,6 +34,7 @@ export interface Menu {
   nombre: string;
   estado?: number;
   asignado?: boolean;
+  procesos?: Proceso[];
 }
 export interface Gestion {
   gestion: number;
@@ -51,7 +54,8 @@ export interface Role {
   nombre: string;
   estado?: number;
     asignado?: boolean;
-
+ menus?: Menu[];
+ 
 }
 export interface Item {
   codi?: number;

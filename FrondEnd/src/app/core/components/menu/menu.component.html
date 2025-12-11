@@ -28,115 +28,23 @@
       Quienes Somos
     </div>
 
-    <!-- === 2. ENLACES PROTEGIDOS (Visibles por Rol) === -->
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/UserGes"
-      id="gestion-usuarios-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestión de Usuarios
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/Roles"
-      id="gestion-roles-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestión de Roles
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/Menus"
-      id="gestion-menus-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestión de Menus
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/AsignacionProcesosMenus"
-      id="gestion-menus-procesos-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Asignacion Procesos a menu
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/AsignacionRolesMenus"
-      id="gestion-menus-roles-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Asignacion Roles a menu
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/AsignacionRolesUsuarios"
-      id="gestion-menus-roles-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Asignacion Roles a usuarios
-    </div>
-
-    <div
-      *ngIf="authService.hasAnyRole(['Administrador', 'Profesor'])"
-      routerLink="/paralelos"
-      id="gestion-parlalelos-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion de paralelos
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/items"
-      id="gestion-items-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion de items
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/materias"
-      id="gestion-materias-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion de materias
-    </div>
-    
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/niveles"
-      id="gestion-niveles-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion de niveles
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/asignardicta"
-      id="gestion-asignarmateriasprofesor-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion asignar materias profesor
-    </div>
-
-    <div
-      *ngIf="authService.hasRole('Administrador')"
-      routerLink="/inscripcionAlumnos"
-      id="gestion-asignarmateriasalumno-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Gestion asignar materias alumno
-    </div>
+       <!-- Procesos asignados al rol activo -->
+    <ng-container *ngIf="authService.isLoggedIn()">
+      <ng-container *ngIf="procesosDisponibles.length; else sinProcesos">
+        <div
+          *ngFor="let proceso of procesosDisponibles"
+          [routerLink]="proceso.enlace"
+          class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
+        >
+          {{ proceso.nombre }}
+        </div>
+      </ng-container>
+      <ng-template #sinProcesos>
+        <div class="text-amber-200/80 italic text-sm">
+          No tienes procesos asignados en este rol.
+        </div>
+      </ng-template>
+    </ng-container>
     <!-- Select de Roles -->
     <select
       *ngIf="authService.isLoggedIn()"
@@ -144,9 +52,10 @@
       id="roles"
       class="ml-auto min-w-[170px] bg-blue-900/70 text-white rounded-xl px-3 py-1.5 border border-white/30 shadow-sm hover:bg-blue-800/80 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-300 transition-all duration-200"
       [ngModel]="selectedRole"
+      [compareWith]="compararRoles"
       (ngModelChange)="selectRole($event)"
     >
-      <option *ngFor="let rol of login?.roles" [value]="rol">
+      <option *ngFor="let rol of login?.roles" [ngValue]="rol">
         {{ rol.nombre }}
       </option>
     </select>
