@@ -41,6 +41,7 @@ import { GestionInscripcionComponent } from './core/components/gestion-inscripci
 import { GestionItemsComponent } from './core/components/gestion-items/gestion-items.component';
 import { ModalItemsComponent } from './core/modales/modal-items/modal-items.component';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { MisMateriasComponent } from './core/components/mis-materias/mis-materias.component';
 
 // 🔹 Registrar el idioma español globalmente
 registerLocaleData(localeEs, 'es');
@@ -75,6 +76,7 @@ registerLocaleData(localeEs, 'es');
     GestionInscripcionComponent,
     GestionItemsComponent,
     ModalItemsComponent,
+    MisMateriasComponent,
   ],
   imports: [
     BrowserModule,

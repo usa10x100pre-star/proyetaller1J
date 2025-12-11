@@ -25,6 +25,10 @@ export class PrograService {
     return this.http.get<PageResponse<Progra>>(this.apiURL, { headers: this.getAuthHeaders(), params });
   }
 
+  listarPorAlumno(login: string): Observable<Progra[]> {
+    return this.http.get<Progra[]>(`${this.apiURL}/alumno/${login}`, { headers: this.getAuthHeaders() });
+  }
+  
   crear(codmat: string, codpar: number, codp: number, gestion: number, login: string): Observable<Progra> {
     let params = new HttpParams()
       .set('codmat', codmat).set('codpar', codpar.toString())

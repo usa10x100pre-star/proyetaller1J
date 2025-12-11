@@ -12,6 +12,7 @@ import { GestionParalelosComponent } from './core/components/gestion-paralelos/g
 import { GestionNivelesComponent } from './core/components/gestion-niveles/gestion-niveles.component';
 import { GestionMateriasComponent } from './core/components/gestion-materias/gestion-materias.component';
 import { GestionAsignacionDictaComponent } from './core/components/gestion-asignacion-dicta/gestion-asignacion-dicta.component';
+import { MisMateriasComponent } from './core/components/mis-materias/mis-materias.component';
 
 // --- 1. Importar el Guardián ---
 // (Asegúrate que la ruta a tu guardián funcional sea correcta)
@@ -101,6 +102,12 @@ const routes: Routes = [
     component: GestionInscripcionComponent,
     canActivate: [authGuard],
     data: { roles: ['Administrador'] }
+  },
+   {
+    path: 'mis-materias',
+    component: MisMateriasComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Estudiante'] }
   },
   // --- Redirecciones ---
   { path: '', redirectTo: '/home', pathMatch: 'full' }, // Ruta por defecto

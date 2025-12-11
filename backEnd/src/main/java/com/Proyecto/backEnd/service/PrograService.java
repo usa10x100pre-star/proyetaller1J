@@ -9,6 +9,7 @@ import com.Proyecto.backEnd.model.*;
 import com.Proyecto.backEnd.repository.*;
 import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class PrograService {
@@ -65,6 +66,17 @@ public class PrograService {
             return p;
         };
         return prograRepo.findAll(spec, pageable);
+    }
+    public List<PrograModel> listarPorAlumno(String login) {
+        UsuariosModel usuario = usuariosRepo.findByLogin(login)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + login));
+
+        PersonalModel alumno = usuario.getPersonal();
+        if (alumno == null) {
+            throw new RuntimeException("El usuario no tiene un registro de estudiante asociado");
+        }
+
+        return prograRepo.findByAlumnoCodpAndEstado(alumno.getCodp(), 1);
     }
 
     /**

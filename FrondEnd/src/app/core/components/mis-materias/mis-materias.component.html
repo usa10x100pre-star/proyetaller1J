@@ -1,0 +1,27 @@
+<section class="contenedor">
+  <header class="encabezado">
+    <div>
+      <p class="etiqueta">Panel del estudiante</p>
+      <h2>Mis materias inscritas</h2>
+      <p class="descripcion">Visualiza las materias en las que estás inscrito actualmente y el paralelo asignado.</p>
+    </div>
+  </header>
+
+  <div *ngIf="estaCargando" class="mensaje-estado">Cargando materias...</div>
+  <div *ngIf="!estaCargando && materiasInscritas.length === 0" class="mensaje-estado">No tienes materias inscritas en esta gestión.</div>
+
+  <div class="tarjetas" *ngIf="!estaCargando && materiasInscritas.length > 0">
+    <article class="tarjeta" *ngFor="let materia of materiasInscritas">
+      <div class="tarjeta__encabezado">
+        <div class="nivel">{{ materia.materia.nivel?.nombre || 'Sin nivel' }}</div>
+        <div class="estado" [class.estado--inactivo]="materia.estado === 0">{{ materia.estado === 1 ? 'Activa' : 'Baja' }}</div>
+      </div>
+      <h3>{{ materia.materia.nombre }}</h3>
+      <p class="detalle">
+        Paralelo <strong>{{ materia.paralelo.nombre }}</strong>
+        • Gestión <strong>{{ materia.id.gestion }}</strong>
+      </p>
+      <p class="detalle">Inscrito como: {{ materia.alumno.nombre }} {{ materia.alumno.ap }}</p>
+    </article>
+  </div>
+</section>

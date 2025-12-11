@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.Proyecto.backEnd.model.PrograId;
 import com.Proyecto.backEnd.model.PrograModel;
 import com.Proyecto.backEnd.service.PrograService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/progra")
@@ -23,12 +24,17 @@ public class PrograController {
     public ResponseEntity<Page<PrograModel>> listar(
         @RequestParam(required = false, defaultValue = "") String filtro,
         @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(required = false) Integer codn, 
+        @RequestParam(required = false) Integer codn,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(prograService.listarPaginado(filtro, estado, codn, pageable));
+    }
+    
+    @GetMapping("/alumno/{login}")
+    public ResponseEntity<List<PrograModel>> listarPorAlumno(@PathVariable String login) {
+        return ResponseEntity.ok(prograService.listarPorAlumno(login));
     }
 
     @PostMapping
