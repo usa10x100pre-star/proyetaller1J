@@ -29,78 +29,78 @@ const routes: Routes = [
 
   // --- Rutas Protegidas (Requieren Login y Roles) ---
   {
-    path: 'UserGes',
+     path: 'userGes',
     component: GestionUsuariosComponent,
     canActivate: [authGuard], // 👈 Protege la ruta
-    data: { roles: ['Administrador'] } // 👈 Define los roles requeridos
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] } // 👈 Define los roles requeridos
   },
   {
-    path: 'Roles',
+    path: 'roles',
     component: GestionRolesComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'Menus',
     component: GestionMenusComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
-    path: 'AsignacionProcesosMenus',
+     path: 'AsignacionProcesosMenu',
     component: GestionAsignacionComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'AsignacionRolesMenus',
     component: GestionAsignacionRolesComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'AsignacionRolesUsuarios',
     component: GestionAsignacionRolesUsuariosComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'paralelos',
     component: GestionParalelosComponent,
     canActivate: [authGuard],
      // Ejemplo: Permitir a Administradores y Profesores
-    data: { roles: ['Administrador', 'Profesor'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'niveles',
     component: GestionNivelesComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
     {
     path: 'items',
     component: GestionItemsComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
 
   {
     path: 'materias',
     component: GestionMateriasComponent,
     canActivate: [authGuard],
-      data: { roles: ['Administrador'] }
+      data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   {
     path: 'asignardicta',
     component: GestionAsignacionDictaComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
 {
     path: 'inscripcionAlumnos',
     component: GestionInscripcionComponent,
     canActivate: [authGuard],
-    data: { roles: ['Administrador'] }
+    data: { roles: ['Administrador', 'Profesor', 'Estudiante'] }
   },
   // --- Redirecciones ---
   { path: '', redirectTo: '/home', pathMatch: 'full' }, // Ruta por defecto
