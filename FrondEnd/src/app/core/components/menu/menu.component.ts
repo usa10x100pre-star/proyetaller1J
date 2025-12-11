@@ -41,8 +41,11 @@ export class MenuComponent implements OnInit {
   actualizarEstadoLogin(): void {
     if (this.authService.isLoggedIn()) {
       this.login = this.authService.getCurrentSession<AuthResponse>('currentUser');
-      // Selecciona el primer rol por defecto en el dropdown
-      this.selectedRole = this.login?.roles[0] ?? null;
+      // Selecciona el rol activo previamente guardado o el primero disponible
+      const activeRoleName = this.authService.getActiveRole();
+      const activeRole = this.login?.roles.find((r) => r.nombre === activeRoleName);
+      this.selectedRole = activeRole ?? this.login?.roles[0] ?? null;
+      this.authService.setActiveRole(this.selectedRole?.nombre ?? null);
     } else {
       this.login = null;
       this.selectedRole = null;
@@ -96,5 +99,6 @@ export class MenuComponent implements OnInit {
     // Aquí podrías añadir lógica para refrescar permisos si fuera necesario.
     console.log("Rol cambiado a:", rol.nombre);
     this.selectedRole = rol;
+     this.authService.setActiveRole(rol?.nombre ?? null);
   }
 }

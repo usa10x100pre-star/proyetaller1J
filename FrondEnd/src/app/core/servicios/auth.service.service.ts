@@ -10,6 +10,7 @@ import { Router } from '@angular/router'; // 👈 Importar Router
 })
 export class AuthServiceService {
   apiURL = environment.apiURL;
+  private activeRoleKey = 'activeRole';
   private _http = inject(HttpClient);
   private router = inject(Router); // 👈 Inyectar Router
 
@@ -28,6 +29,8 @@ export class AuthServiceService {
 
   setCurrentSession(sessionName: string, data: AuthResponse): void {
     localStorage.setItem(sessionName, JSON.stringify(data));
+      // Almacena el primer rol como rol activo por defecto
+    this.setActiveRole(data.roles?.[0]?.nombre ?? null);
   }
 
   getCurrentSession<T = any>(sessionName: string): T | null {
@@ -35,6 +38,24 @@ export class AuthServiceService {
     return data ? (JSON.parse(data) as T) : null;
   }
 
+   /**
+   * Obtiene el rol actualmente seleccionado por el usuario.
+   */
+  getActiveRole(): string | null {
+    return localStorage.getItem(this.activeRoleKey);
+  }
+
+  /**
+   * Persiste el rol seleccionado para que el resto de la aplicación lo use.
+   */
+  setActiveRole(roleName: string | null): void {
+    if (roleName) {
+      localStorage.setItem(this.activeRoleKey, roleName);
+    } else {
+      localStorage.removeItem(this.activeRoleKey);
+    }
+  }
+  
   getToken(): string {
     const session = this.getCurrentSession<AuthResponse>('currentUser');
     return session?.token ?? '';
@@ -89,6 +110,7 @@ export class AuthServiceService {
    */
   logout(): void {
     localStorage.removeItem('currentUser');
+      this.setActiveRole(null);
     this.router.navigate(['/home']); // Redirige a la página principal
   }
 
@@ -105,6 +127,11 @@ export class AuthServiceService {
    * @param roleName El nombre del rol a verificar (Ej: "Administrador")
    */
   hasRole(roleName: string): boolean {
+      const activeRole = this.getActiveRole();
+
+    if (activeRole) {
+      return activeRole === roleName;
+    }
     const roles = this.getRoles();
     // Busca si alguno de los roles del usuario coincide con el nombre
     return roles.some(rol => rol.nombre === roleName);
@@ -112,9 +139,15 @@ export class AuthServiceService {
 
   /**
    * Verifica si el usuario tiene CUALQUIERA de los roles en una lista.
-   * @param requiredRoles Un array de nombres de rol (Ej: ['Administrador', 'Docente'])
+   * @param requiredRoles Un array de nombres de rol (Ej: ['Administrador', 'Profesor'])
    */
   hasAnyRole(requiredRoles: string[]): boolean {
+     const activeRole = this.getActiveRole();
+
+    if (activeRole) {
+      return requiredRoles.includes(activeRole);
+    }
+
     const userRoles = this.getRoles().map(r => r.nombre);
     // Devuelve true si el usuario tiene al menos uno de los roles requeridos
     return requiredRoles.some(role => userRoles.includes(role));

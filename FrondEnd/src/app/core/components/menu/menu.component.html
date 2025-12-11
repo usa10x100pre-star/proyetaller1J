@@ -85,7 +85,7 @@
     </div>
 
     <div
-      *ngIf="authService.hasAnyRole(['Administrador', 'Docente'])"
+      *ngIf="authService.hasAnyRole(['Administrador', 'Profesor'])"
       routerLink="/paralelos"
       id="gestion-parlalelos-link"
       class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
@@ -136,14 +136,6 @@
       class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
     >
       Gestion asignar materias alumno
-    </div>
- <div
-      *ngIf="authService.hasRole('Estudiante')"
-      routerLink="/mis-materias"
-      id="mis-materias-link"
-      class="pb-1 border-b border-transparent hover:border-amber-300 hover:text-amber-200 transition-all duration-200"
-    >
-      Mis materias
     </div>
     <!-- Select de Roles -->
     <select
