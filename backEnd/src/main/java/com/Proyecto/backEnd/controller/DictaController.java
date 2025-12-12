@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/api/dicta")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class DictaController {
 
     @Autowired
@@ -25,12 +26,11 @@ public class DictaController {
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<Page<DictaModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(required = false) Integer codn, // Filtro de Nivel
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(required = false) Integer codn, // Filtro de Nivel
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(dictaService.listarPaginado(filtro, estado, codn, pageable));
     }
@@ -41,11 +41,11 @@ public class DictaController {
     @PostMapping
     @Transactional
     public ResponseEntity<DictaModel> crear(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp,
-        @RequestParam int gestion,
-        @RequestParam String login // Asumimos que el frontend envía el login del usuario actual
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp,
+            @RequestParam int gestion,
+            @RequestParam String login // Asumimos que el frontend envía el login del usuario actual
     ) {
         DictaModel nueva = dictaService.crearAsignacion(codmat, codpar, codp, gestion, login);
         return ResponseEntity.ok(nueva);
@@ -56,48 +56,45 @@ public class DictaController {
      */
     @DeleteMapping
     public ResponseEntity<Void> eliminar(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp,
-        @RequestParam int gestion
-    ) {
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp,
+            @RequestParam int gestion) {
         DictaId id = new DictaId(codpar, codp, codmat, gestion);
         dictaService.eliminarLogico(id);
         return ResponseEntity.noContent().build();
     }
-    
+
     /**
      * Habilitar Asignación (Botón 'H' que falta en la UI)
      */
     @PutMapping("/habilitar")
     @Transactional
     public ResponseEntity<Void> habilitar(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp,
-        @RequestParam int gestion
-    ) {
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp,
+            @RequestParam int gestion) {
         DictaId id = new DictaId(codpar, codp, codmat, gestion);
         dictaService.habilitar(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping
     public ResponseEntity<DictaModel> modificar(
-        // --- Clave Vieja (para buscar y borrar)
-        @RequestParam String oldCodmat,
-        @RequestParam int oldCodpar,
-        @RequestParam int oldCodp,
-        @RequestParam int oldGestion,
-        // --- Clave Nueva (para guardar)
-        @RequestParam String newCodmat,
-        @RequestParam int newCodpar,
-        @RequestParam int newCodp,
-        @RequestParam String login
-    ) {
+            // --- Clave Vieja (para buscar y borrar)
+            @RequestParam String oldCodmat,
+            @RequestParam int oldCodpar,
+            @RequestParam int oldCodp,
+            @RequestParam int oldGestion,
+            // --- Clave Nueva (para guardar)
+            @RequestParam String newCodmat,
+            @RequestParam int newCodpar,
+            @RequestParam int newCodp,
+            @RequestParam String login) {
         DictaModel actualizada = dictaService.modificarAsignacion(
-            oldCodmat, oldCodpar, oldCodp, oldGestion,
-            newCodmat, newCodpar, newCodp, login
-        );
+                oldCodmat, oldCodpar, oldCodp, oldGestion,
+                newCodmat, newCodpar, newCodp, login);
         return ResponseEntity.ok(actualizada);
     }
 }

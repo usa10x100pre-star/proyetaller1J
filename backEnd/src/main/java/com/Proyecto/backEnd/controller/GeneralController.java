@@ -11,14 +11,15 @@ import java.util.Map; // Para devolver un JSON simple
 
 @RestController
 @RequestMapping("/api/general")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class GeneralController {
 
     @Autowired
     private GeneralService generalService;
 
     /**
-     * B-12.1. Endpoint para obtener la gestión actual 
+     * B-12.1. Endpoint para obtener la gestión actual
      */
     @GetMapping("/gestion-actual")
     public ResponseEntity<?> getGestionActual() {

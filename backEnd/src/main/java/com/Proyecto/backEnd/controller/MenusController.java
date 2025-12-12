@@ -22,17 +22,19 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/menus") // ✅ Ruta base
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class MenusController {
-    
+
     @Autowired
     MenusService menService;
-    
+
     /**
      * ✅ B-6. Listar, Filtrar y Paginar Menús
      *
      * @param page (Nro de página, inicia en 0)
-     * [cite_start]@param size (Tamaño de página, B-6 pide 10) [cite: 671]
+     *             [cite_start]@param size (Tamaño de página, B-6 pide 10) [cite:
+     *             671]
      */
     @GetMapping("/para-rol/{codr}")
     public ResponseEntity<Page<MenusModel>> getMenusParaRol(
@@ -46,6 +48,7 @@ public class MenusController {
         Page<MenusModel> pagina = menService.getMenusParaRol(codr, filtro, asignado, pageable);
         return ResponseEntity.ok(pagina);
     }
+
     @GetMapping
     public ResponseEntity<Page<MenusModel>> listarMenusPaginado(
             @RequestParam(required = false, defaultValue = "") String filtro,

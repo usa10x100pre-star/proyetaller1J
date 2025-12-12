@@ -39,12 +39,12 @@ public class PersonalService {
 
     // Listar
     public List<PersonalModel> listarTodo() {
-    	 List<PersonalModel> lista = personalRepo.findAll();
-         lista.forEach(p -> {
-             p.setFoto(normalizarFoto(p.getFoto()));
-             datosRepo.findById(p.getCodp())
-                     .ifPresent(datos -> p.setCedula(datos.getCedula()));
-         });
+        List<PersonalModel> lista = personalRepo.findAll();
+        lista.forEach(p -> {
+            p.setFoto(normalizarFoto(p.getFoto()));
+            datosRepo.findById(p.getCodp())
+                    .ifPresent(datos -> p.setCedula(datos.getCedula()));
+        });
         return lista;
     }
 
@@ -54,7 +54,7 @@ public class PersonalService {
         System.out.println("🧩 Guardando persona: " + personal.getNombre());
 
         String cedulaNormalizada = validarCedulaObligatoriaYUnica(personal.getCedula(), null);
-        
+
         if (foto != null && !foto.isEmpty()) {
             String nombreFoto = guardarFoto(foto);
             personal.setFoto(nombreFoto);
@@ -70,7 +70,7 @@ public class PersonalService {
         datosPersona.setCodp(guardado.getCodp());
         datosPersona.setCedula(cedulaNormalizada);
         datosPersona.setPersonal(guardado);
-        
+
         try {
             datosRepo.save(datosPersona);
         } catch (DataIntegrityViolationException ex) {
@@ -110,13 +110,13 @@ public class PersonalService {
         datosPersona.setCodp(codp);
         datosPersona.setCedula(nuevaCedula);
         datosPersona.setPersonal(p);
-        
+
         try {
             datosRepo.save(datosPersona);
         } catch (DataIntegrityViolationException ex) {
             throw new DuplicateResourceException("Ya existe una persona registrada con esa cédula", ex);
         }
-        
+
         // Lógica para foto
         if (datos.getFoto() != null && datos.getFoto().equals("DEFAULT")) {
             // Si el frontend manda "DEFAULT", forzamos la imagen por defecto
@@ -206,6 +206,7 @@ public class PersonalService {
         }
         return foto;
     }
+
     private String validarCedulaObligatoriaYUnica(String cedula, Integer codpActual) {
         if (cedula == null || cedula.trim().isEmpty()) {
             throw new IllegalArgumentException("La cédula es obligatoria");
@@ -221,6 +222,7 @@ public class PersonalService {
 
         return cedulaNormalizada;
     }
+
     public List<PersonalModel> listarEstudiantesActivos() {
         Specification<PersonalModel> spec = (root, query, cb) -> {
             Predicate p1 = cb.equal(root.get("estado"), 1); // Activos

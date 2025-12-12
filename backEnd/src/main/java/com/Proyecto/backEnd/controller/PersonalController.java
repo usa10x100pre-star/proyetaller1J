@@ -11,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.Proyecto.backEnd.model.PersonalModel;
 import com.Proyecto.backEnd.service.PersonalService;
 
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 @RestController
 @RequestMapping("/api/personal")
 public class PersonalController {
@@ -20,49 +21,46 @@ public class PersonalController {
     private PersonalService personalService;
 
     // ✅ B-3.1 Listar Personal
-   @GetMapping
-public ResponseEntity<List<PersonalModel>> listarTodo() {
-    List<PersonalModel> lista = personalService.listarTodo();
-    // Marcar quién tiene usuario
-    lista.forEach(p -> {
-        boolean tieneUsuario = personalService.tieneUsuario(p.getCodp());
-        p.setTieneClave(tieneUsuario ? 1 : 0);
-    });
-    return ResponseEntity.ok(lista);
-}
-
+    @GetMapping
+    public ResponseEntity<List<PersonalModel>> listarTodo() {
+        List<PersonalModel> lista = personalService.listarTodo();
+        // Marcar quién tiene usuario
+        lista.forEach(p -> {
+            boolean tieneUsuario = personalService.tieneUsuario(p.getCodp());
+            p.setTieneClave(tieneUsuario ? 1 : 0);
+        });
+        return ResponseEntity.ok(lista);
+    }
 
     // ✅ B-3.2 Registrar nuevo Personal
     @PostMapping
-public ResponseEntity<PersonalModel> crear(
-        @RequestPart("personal") PersonalModel personal,
-        @RequestPart(value = "foto", required = false) MultipartFile foto
-) throws IOException {
-    System.out.println("📩 Recibido objeto personal: " + personal);
-    System.out.println("➡️ Nombre: " + personal.getNombre());
-    System.out.println("➡️ Apellido: " + personal.getAp());
-    System.out.println("➡️ codp (debe ser null): " + personal.getCodp());
+    public ResponseEntity<PersonalModel> crear(
+            @RequestPart("personal") PersonalModel personal,
+            @RequestPart(value = "foto", required = false) MultipartFile foto) throws IOException {
+        System.out.println("📩 Recibido objeto personal: " + personal);
+        System.out.println("➡️ Nombre: " + personal.getNombre());
+        System.out.println("➡️ Apellido: " + personal.getAp());
+        System.out.println("➡️ codp (debe ser null): " + personal.getCodp());
 
-    if (foto != null) {
-        System.out.println("📷 Foto recibida: " + foto.getOriginalFilename());
-    } else {
-        System.out.println("⚠️ No llegó foto (foto es null)");
+        if (foto != null) {
+            System.out.println("📷 Foto recibida: " + foto.getOriginalFilename());
+        } else {
+            System.out.println("⚠️ No llegó foto (foto es null)");
+        }
+
+        PersonalModel nuevo = personalService.crear(personal, foto);
+        System.out.println("💾 Persona guardada con codp: " + nuevo.getCodp());
+        System.out.println("💾 Foto registrada en BD: " + nuevo.getFoto());
+
+        return ResponseEntity.ok(nuevo);
     }
-
-    PersonalModel nuevo = personalService.crear(personal, foto);
-    System.out.println("💾 Persona guardada con codp: " + nuevo.getCodp());
-    System.out.println("💾 Foto registrada en BD: " + nuevo.getFoto());
-
-    return ResponseEntity.ok(nuevo);
-}
 
     // ✅ B-3.3 Modificar datos personales
     @PutMapping("/{codp}")
     public ResponseEntity<PersonalModel> modificar(
             @PathVariable int codp,
             @RequestPart("personal") PersonalModel datos,
-            @RequestPart(value = "foto", required = false) MultipartFile nuevaFoto
-    ) throws IOException {
+            @RequestPart(value = "foto", required = false) MultipartFile nuevaFoto) throws IOException {
         PersonalModel actualizado = personalService.modificar(codp, datos, nuevaFoto);
         return ResponseEntity.ok(actualizado);
     }
@@ -80,13 +78,13 @@ public ResponseEntity<PersonalModel> crear(
         personalService.habilitar(codp);
         return ResponseEntity.noContent().build();
     }
-    
+
     @GetMapping("/profesores-activos")
     public ResponseEntity<List<PersonalModel>> getProfesoresActivos() {
         return ResponseEntity.ok(personalService.listarProfesoresActivos());
     }
 
-      @GetMapping("/estudiantes-activos")
+    @GetMapping("/estudiantes-activos")
     public ResponseEntity<List<PersonalModel>> getEstudiantesActivos() {
         return ResponseEntity.ok(personalService.listarEstudiantesActivos());
     }

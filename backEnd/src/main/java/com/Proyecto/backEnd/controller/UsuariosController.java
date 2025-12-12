@@ -21,22 +21,21 @@ import com.Proyecto.backEnd.service.UsuariosService;
 
 @RestController
 @RequestMapping("/api/usuarios") // ✅ Ruta base correcta
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
 public class UsuariosController {
 
     @Autowired
     UsuariosService usuService;
-    
+
     /**
      * B-9. Endpoint para "Lista de Usuarios" (panel izquierdo).
      * Mapea a GET /api/usuarios
      */
-    @GetMapping 
+    @GetMapping
     public ResponseEntity<Page<UsuariosModel>> listaUsuariosPaginada(
             @RequestParam(required = false, defaultValue = "") String filtro,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<UsuariosModel> pagina = usuService.listarUsuariosPaginado(filtro, pageable);
         return ResponseEntity.ok(pagina);
@@ -46,7 +45,7 @@ public class UsuariosController {
      * Crear nuevo usuario (B-3.5)
      * Mapea a POST /api/usuarios
      */
-    @PostMapping 
+    @PostMapping
     public ResponseEntity<UsuariosModel> crearUsuario(@RequestBody UsuariosModel usuario) {
         UsuariosModel nuevo = usuService.crearUsuario(usuario);
         return ResponseEntity.ok(nuevo);
@@ -56,8 +55,9 @@ public class UsuariosController {
      * Modificar datos de acceso (B-3.6)
      * Mapea a PUT /api/usuarios/{login}
      */
-    @PutMapping("/{login}") 
-    public ResponseEntity<UsuariosModel> modificarUsuario(@PathVariable String login, @RequestBody UsuariosModel usuario) {
+    @PutMapping("/{login}")
+    public ResponseEntity<UsuariosModel> modificarUsuario(@PathVariable String login,
+            @RequestBody UsuariosModel usuario) {
         UsuariosModel actualizado = usuService.modificarUsuario(login, usuario);
         return ResponseEntity.ok(actualizado);
     }
@@ -66,7 +66,7 @@ public class UsuariosController {
      * Eliminar (baja lógica)
      * Mapea a DELETE /api/usuarios/{login}
      */
-    @DeleteMapping("/{login}") 
+    @DeleteMapping("/{login}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable String login) {
         usuService.eliminarLogico(login);
         return ResponseEntity.noContent().build();
@@ -76,7 +76,7 @@ public class UsuariosController {
      * Habilitar usuario eliminado
      * Mapea a PUT /api/usuarios/{login}/habilitar
      */
-    @PutMapping("/{login}/habilitar") 
+    @PutMapping("/{login}/habilitar")
     public ResponseEntity<Void> habilitarUsuario(@PathVariable String login) {
         usuService.habilitarUsuario(login);
         return ResponseEntity.noContent().build();

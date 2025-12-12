@@ -2,7 +2,6 @@ package com.Proyecto.backEnd.controller;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +19,7 @@ import com.Proyecto.backEnd.service.AsignacionService;
 
 @RestController
 @RequestMapping("/api/asignaciones")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
 public class AsignacionController {
 
     @Autowired
@@ -29,7 +28,7 @@ public class AsignacionController {
     /**
      * ✅ B-7. Endpoint para asignar (Check)
      */
-@PostMapping("/usurol")
+    @PostMapping("/usurol")
     public ResponseEntity<Void> asignarUsuarioRol(@RequestParam String login, @RequestParam int codr) {
         asignacionService.asignarUsuarioRol(login, codr);
         return ResponseEntity.ok().build();
@@ -49,6 +48,7 @@ public class AsignacionController {
         asignacionService.asignarMenuProceso(codm, codp);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/itemat/{codmat}")
     public ResponseEntity<List<ItematModel>> getItemsDeMateria(
             @PathVariable String codmat,
@@ -73,7 +73,8 @@ public class AsignacionController {
         asignacionService.desasignarMateriaItem(codmat, codi, gestion);
         return ResponseEntity.noContent().build();
     }
-@GetMapping("/mapa/{codmat}")
+
+    @GetMapping("/mapa/{codmat}")
     public ResponseEntity<List<MapaModel>> getParalelosDeMateria(
             @PathVariable String codmat,
             @RequestParam int gestion) {
@@ -92,7 +93,7 @@ public class AsignacionController {
     }
 
     /**
-     * B-12.1. Elimina la asignación de un paralelo 
+     * B-12.1. Elimina la asignación de un paralelo
      */
     @DeleteMapping("/mapa")
     public ResponseEntity<Void> desasignarMateriaParalelo(
@@ -102,6 +103,7 @@ public class AsignacionController {
         asignacionService.desasignarMateriaParalelo(codmat, codpar, gestion);
         return ResponseEntity.noContent().build();
     }
+
     /**
      * ✅ B-7. Endpoint para desasignar (Uncheck)
      */
@@ -110,6 +112,7 @@ public class AsignacionController {
         asignacionService.desasignarMenuProceso(codm, codp);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/rolme")
     public ResponseEntity<Void> asignarRolMenu(@RequestParam int codr, @RequestParam int codm) {
         asignacionService.asignarRolMenu(codr, codm);
@@ -124,7 +127,7 @@ public class AsignacionController {
         asignacionService.desasignarRolMenu(codr, codm);
         return ResponseEntity.ok().build();
     }
-    
+
     @GetMapping("/mapa-activos")
     public ResponseEntity<List<MapaModel>> getMapasActivos(@RequestParam int gestion) {
         return ResponseEntity.ok(asignacionService.getMapasActivos(gestion));

@@ -12,7 +12,8 @@ import com.Proyecto.backEnd.service.ItemsService;
 
 @RestController
 @RequestMapping("/api/items") // Ruta base
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class ItemsController {
 
     @Autowired
@@ -23,10 +24,10 @@ public class ItemsController {
      */
     @GetMapping
     public ResponseEntity<Page<ItemsModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size // B-11 pide 10 elementos
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size // B-11 pide 10 elementos
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(itemsService.listarPaginado(filtro, estado, pageable));
@@ -74,7 +75,7 @@ public class ItemsController {
         itemsService.habilitar(codi);
         return ResponseEntity.noContent().build();
     }
-    
+
     /**
      * Obtener ítem por ID
      */

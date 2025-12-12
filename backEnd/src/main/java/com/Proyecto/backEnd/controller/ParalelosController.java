@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Proyecto.backEnd.model.ParalelosModel;
 import com.Proyecto.backEnd.service.ParalelosService;
 
-
 @RestController
 @RequestMapping("/api/paralelos") // Ruta base para este controlador
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class ParalelosController {
 
     @Autowired
@@ -35,18 +35,20 @@ public class ParalelosController {
      */
     @GetMapping
     public ResponseEntity<Page<ParalelosModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size // B-10 pide 10 elementos por página [cite: 866]
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size // B-10 pide 10 elementos por página [cite: 866]
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(paralelosService.listarPaginado(filtro, estado, pageable));
     }
-@GetMapping("/activos")
+
+    @GetMapping("/activos")
     public ResponseEntity<List<ParalelosModel>> listarActivos() {
         return ResponseEntity.ok(paralelosService.listarTodosActivos());
     }
+
     /**
      * B-10.1. Adicionar Nuevo Paralelo [cite: 875]
      */
@@ -80,7 +82,7 @@ public class ParalelosController {
         paralelosService.habilitar(codpar);
         return ResponseEntity.noContent().build();
     }
-    
+
     /**
      * Endpoint auxiliar para buscar por ID
      */

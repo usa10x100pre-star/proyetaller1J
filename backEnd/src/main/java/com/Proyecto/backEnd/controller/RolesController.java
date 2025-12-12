@@ -20,11 +20,11 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/roles") // Ruta base
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
 public class RolesController {
     @Autowired
     RolesService rolService;
-    
+
     /**
      * B-5. Listar, Filtrar y Paginar Roles
      */
@@ -33,8 +33,7 @@ public class RolesController {
             @RequestParam(required = false, defaultValue = "") String filtro,
             @RequestParam(defaultValue = "TODOS") String estado,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int size
-    ) {
+            @RequestParam(defaultValue = "15") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<RolesModel> paginaRoles = rolService.listarPaginado(filtro, estado, pageable);
         return ResponseEntity.ok(paginaRoles);
@@ -50,8 +49,7 @@ public class RolesController {
             @RequestParam(required = false, defaultValue = "") String filtro,
             @RequestParam(defaultValue = "TODOS") String asignado,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<RolesModel> pagina = rolService.getRolesParaUsuario(login, filtro, asignado, pageable);
         return ResponseEntity.ok(pagina);

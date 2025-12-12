@@ -21,7 +21,8 @@ import com.Proyecto.backEnd.service.MateriasService;
 
 @RestController
 @RequestMapping("/api/materias")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class MateriasController {
 
     @Autowired
@@ -32,21 +33,21 @@ public class MateriasController {
      */
     @GetMapping
     public ResponseEntity<Page<MateriasModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size // B-12 pide 10 [cite: 970]
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size // B-12 pide 10 [cite: 970]
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(materiasService.listarPaginado(filtro, estado, pageable));
     }
-    
+
     /**
      * B-12.3. Adicionar Nueva Materia
      */
     @PostMapping
     public ResponseEntity<MateriasModel> crear(@RequestBody MateriasModel materia) {
-        // El frontend debe enviar: 
+        // El frontend debe enviar:
         // { "codmat": "SIS-101", "nombre": "Intro", "nivel": { "codn": 1 } }
         return ResponseEntity.ok(materiasService.crearMateria(materia));
     }

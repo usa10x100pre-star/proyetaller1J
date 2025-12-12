@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 })
 export class MateriasService {
 
-   private apiUrl = 'http://10.194.218.145:9090/api/progra/alumno';
+   private apiUrl = 'http://192.168.0.18:9090/api/progra/alumno';
 
   constructor(private http: HttpClient) {}
 

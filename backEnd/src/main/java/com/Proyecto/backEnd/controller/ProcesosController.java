@@ -2,7 +2,6 @@ package com.Proyecto.backEnd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import com.Proyecto.backEnd.model.MenusModel;
 import com.Proyecto.backEnd.model.ProcesosModel;
 import com.Proyecto.backEnd.service.ProcesosService;
 
@@ -19,16 +18,17 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/procesos") // ✅ Ruta base
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class ProcesosController {
 
     @Autowired
     ProcesosService proService;
-    
+
     /**
      * ✅ B-7. Endpoint para la "Lista de Procesos" de la derecha.
      *
-     * @param codm   El ID del menú seleccionado a la izquierda.
+     * @param codm     El ID del menú seleccionado a la izquierda.
      * @param filtro   Filtro por nombre de proceso.
      * @param asignado "TODOS", "SI", "NO".
      * @param page     Página (0-based).
@@ -40,8 +40,7 @@ public class ProcesosController {
             @RequestParam(required = false, defaultValue = "") String filtro,
             @RequestParam(defaultValue = "TODOS") String asignado,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProcesosModel> pagina = proService.getProcesosParaMenu(codm, filtro, asignado, pageable);
         return ResponseEntity.ok(pagina);
@@ -55,8 +54,7 @@ public class ProcesosController {
             @RequestParam(required = false, defaultValue = "") String filtro,
             @RequestParam(defaultValue = "TODOS") String estado,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProcesosModel> pagina = proService.listaProcesos(filtro, estado, pageable);
         return ResponseEntity.ok(pagina);

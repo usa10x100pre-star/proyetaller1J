@@ -14,7 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/progra")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class PrograController {
 
     @Autowired
@@ -22,16 +23,15 @@ public class PrograController {
 
     @GetMapping
     public ResponseEntity<Page<PrograModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(required = false) Integer codn,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(required = false) Integer codn,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(prograService.listarPaginado(filtro, estado, codn, pageable));
     }
-    
+
     @GetMapping("/alumno/{login}")
     public ResponseEntity<List<PrograModel>> listarPorAlumno(@PathVariable String login) {
         return ResponseEntity.ok(prograService.listarPorAlumno(login));
@@ -39,12 +39,11 @@ public class PrograController {
 
     @PostMapping
     public ResponseEntity<?> crear(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp, // codp del Alumno
-        @RequestParam int gestion,
-        @RequestParam String login
-    ) {
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp, // codp del Alumno
+            @RequestParam int gestion,
+            @RequestParam String login) {
         PrograModel nueva = prograService.crearInscripcion(codmat, codpar, codp, gestion, login);
         if (nueva == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta inscripción ya existe.");
@@ -54,39 +53,37 @@ public class PrograController {
 
     @PutMapping
     public ResponseEntity<?> modificar(
-        @RequestParam String oldCodmat,
-        @RequestParam int oldCodpar,
-        @RequestParam int oldCodp,
-        @RequestParam int oldGestion,
-        @RequestParam String newCodmat,
-        @RequestParam int newCodpar,
-        @RequestParam int newCodp,
-        @RequestParam String login
-    ) {
-    	PrograModel act = prograService.modificarInscripcion(oldCodmat, oldCodpar, oldCodp, oldGestion, newCodmat, newCodpar, newCodp, login);
+            @RequestParam String oldCodmat,
+            @RequestParam int oldCodpar,
+            @RequestParam int oldCodp,
+            @RequestParam int oldGestion,
+            @RequestParam String newCodmat,
+            @RequestParam int newCodpar,
+            @RequestParam int newCodp,
+            @RequestParam String login) {
+        PrograModel act = prograService.modificarInscripcion(oldCodmat, oldCodpar, oldCodp, oldGestion, newCodmat,
+                newCodpar, newCodp, login);
         return ResponseEntity.ok(act);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> eliminar(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp,
-        @RequestParam int gestion
-    ) {
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp,
+            @RequestParam int gestion) {
         // Creamos el ID compuesto correctamente
         PrograId pid = new PrograId(codpar, codp, codmat, gestion);
         prograService.eliminarLogico(pid);
         return ResponseEntity.noContent().build();
     }
-    
+
     @PutMapping("/habilitar")
     public ResponseEntity<Void> habilitar(
-        @RequestParam String codmat,
-        @RequestParam int codpar,
-        @RequestParam int codp,
-        @RequestParam int gestion
-    ) {
+            @RequestParam String codmat,
+            @RequestParam int codpar,
+            @RequestParam int codp,
+            @RequestParam int gestion) {
         PrograId pid = new PrograId(codpar, codp, codmat, gestion);
         prograService.habilitar(pid);
         return ResponseEntity.noContent().build();

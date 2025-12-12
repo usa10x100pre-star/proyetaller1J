@@ -22,7 +22,8 @@ import com.Proyecto.backEnd.service.NivelesService;
 
 @RestController
 @RequestMapping("/api/niveles")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
+@CrossOrigin(originPatterns = "*", allowCredentials = "false")
+
 public class NivelesController {
 
     @Autowired
@@ -33,10 +34,10 @@ public class NivelesController {
      */
     @GetMapping
     public ResponseEntity<Page<NivelesModel>> listar(
-        @RequestParam(required = false, defaultValue = "") String filtro,
-        @RequestParam(defaultValue = "TODOS") String estado,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size // B-13 pide 10 elementos por página [cite: 1115]
+            @RequestParam(required = false, defaultValue = "") String filtro,
+            @RequestParam(defaultValue = "TODOS") String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size // B-13 pide 10 elementos por página [cite: 1115]
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(nivelesService.listarPaginado(filtro, estado, pageable));
@@ -84,7 +85,7 @@ public class NivelesController {
         nivelesService.habilitar(codn);
         return ResponseEntity.noContent().build();
     }
-    
+
     /**
      * Endpoint auxiliar para buscar por ID
      */
