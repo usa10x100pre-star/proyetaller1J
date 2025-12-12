@@ -10,6 +10,7 @@ import { MateriasService } from '../services/materias.service';
 })
 export class ServiciosPage implements OnInit {
   token: string = "";
+  login: string = "";
   materias: any[] = [];
   mensajeEstado: string = '';
   errorMsg: string = '';
@@ -21,18 +22,20 @@ export class ServiciosPage implements OnInit {
 
  ngOnInit() {
     this.token = localStorage.getItem("token") || "";
+     this.login = localStorage.getItem("login") || "";
     this.cargarMaterias();
   }
 
   cargarMaterias() {
-    const token = localStorage.getItem('token');
+    this.token = localStorage.getItem('token') || '';
+    this.login = localStorage.getItem('login') || '';
 
-    if (!token) {
+    if (!this.token || !this.login) {
       this.router.navigate(['/home']);
       return;
     }
 
-    this.materiasService.getMaterias(token).subscribe({
+    this.materiasService.getMaterias(this.token, this.login).subscribe({
       next: (materias) => {
         this.materias = materias;
         this.mensajeEstado = this.construirMensajeMaterias(materias);
@@ -46,13 +49,13 @@ export class ServiciosPage implements OnInit {
     });
   }
 
-  cerrarSesion() {
+   cerrarSesion() {
     localStorage.clear();
     this.router.navigate(['/home']);
   }
 
  refrescarMaterias(event: any) {
-    this.materiasService.getMaterias(this.token).subscribe({
+    this.materiasService.getMaterias(this.token, this.login).subscribe({
       next: (materias) => {
         this.materias = materias;
         this.mensajeEstado = this.construirMensajeMaterias(materias);

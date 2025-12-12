@@ -11,7 +11,7 @@ import java.util.Map; // Para devolver un JSON simple
 
 @RestController
 @RequestMapping("/api/general")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.18:8100"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://10.194.218.145:8100"})
 public class GeneralController {
 
     @Autowired

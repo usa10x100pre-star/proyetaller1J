@@ -11,13 +11,15 @@ import lombok.Setter;
 @Setter
 public class AuthResponse {
 	
-	private String token;
+	 private String token;
+	    private String login;
     private String nombre;
     private List<RolesModel> roles;
     private String fecha;
 
-    public AuthResponse(String token, String nombre, List<RolesModel> roles, String fecha) {
+    public AuthResponse(String token, String login, String nombre, List<RolesModel> roles, String fecha) {
         this.token = token;
+        this.login = login;
         this.nombre = nombre;
         this.roles = roles;
         this.fecha = fecha;

@@ -31,7 +31,8 @@ export class HomePage {
     this.authService.login(this.username, this.password).subscribe({
       next: (resp: any) => {
         localStorage.setItem('token', resp.token);
-        localStorage.setItem('nombreCompleto', resp.nombreCompleto);
+        localStorage.setItem('nombreCompleto', resp.nombre || resp.nombreCompleto);
+        localStorage.setItem('login', resp.login || this.username);
         this.router.navigate(['/materias']);
       },
       error: () => {
