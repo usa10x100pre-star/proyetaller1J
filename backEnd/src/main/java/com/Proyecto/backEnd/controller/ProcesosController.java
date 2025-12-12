@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/procesos") // ✅ Ruta base
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.16:8100"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.18:8100"})
 public class ProcesosController {
 
     @Autowired

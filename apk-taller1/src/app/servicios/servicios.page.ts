@@ -11,18 +11,18 @@ import { MateriasService } from '../services/materias.service';
 export class ServiciosPage implements OnInit {
   token: string = "";
   materias: any[] = [];
+  mensajeEstado: string = '';
+  errorMsg: string = '';
 
   constructor(
     private materiasService: MateriasService,
     private router: Router
   ) {}
 
-
-
  ngOnInit() {
-  this.token = localStorage.getItem("token") || "";
-  this.cargarMaterias();
-}
+    this.token = localStorage.getItem("token") || "";
+    this.cargarMaterias();
+  }
 
   cargarMaterias() {
     const token = localStorage.getItem('token');
@@ -33,11 +33,15 @@ export class ServiciosPage implements OnInit {
     }
 
     this.materiasService.getMaterias(token).subscribe({
-      next: (resp: any) => {
-        this.materias = resp.content;
+      next: (materias) => {
+        this.materias = materias;
+        this.mensajeEstado = this.construirMensajeMaterias(materias);
+        this.errorMsg = '';
       },
-      error: () => {
+      error: (err: any) => {
         this.materias = [];
+          this.errorMsg = err?.message || 'No se pudieron cargar las materias del estudiante.';
+        this.mensajeEstado = '';
       }
     });
   }
@@ -47,16 +51,30 @@ export class ServiciosPage implements OnInit {
     this.router.navigate(['/home']);
   }
 
+ refrescarMaterias(event: any) {
+    this.materiasService.getMaterias(this.token).subscribe({
+      next: (materias) => {
+        this.materias = materias;
+        this.mensajeEstado = this.construirMensajeMaterias(materias);
+        this.errorMsg = '';
+        event.target.complete();
+      },
+      error: (err: any) => {
+        this.materias = [];
+        this.errorMsg = err?.message || 'No se pudieron cargar las materias del estudiante.';
+        this.mensajeEstado = '';
+        event.target.complete();
+      }
+    });
+  }
+ private construirMensajeMaterias(materias: any[]): string {
+    if (!materias || materias.length === 0) {
+      return '';
+    }
 
-refrescarMaterias(event: any) {
-  this.materiasService.getMaterias(this.token).subscribe({
-    next: (resp) => {
-      this.materias = resp.content || resp;
-      event.target.complete();
-    },
-    error: () => event.target.complete()
-  });
-}
+    const listaMaterias = materias.map((m) => m.nombre).join(', ');
+    return `Estás programado en: ${listaMaterias}`;
+  }
 
 
 }

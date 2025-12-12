@@ -15,6 +15,9 @@
   <ion-card>
     <ion-card-content>
 
+       <p *ngIf="mensajeEstado" class="estado">{{ mensajeEstado }}</p>
+      <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+      
       <ion-list *ngIf="materias.length > 0; else noDatos">
         <ion-item *ngFor="let m of materias; let i = index">
           <ion-label>&gt; {{ i + 1 }} - {{ m.nombre }}</ion-label>

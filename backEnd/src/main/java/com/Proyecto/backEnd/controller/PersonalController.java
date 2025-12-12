@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.Proyecto.backEnd.model.PersonalModel;
 import com.Proyecto.backEnd.service.PersonalService;
 
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.16:8100"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8100", "http://192.168.0.18:8100"})
 @RestController
 @RequestMapping("/api/personal")
 public class PersonalController {
